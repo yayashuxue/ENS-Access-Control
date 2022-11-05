@@ -146,10 +146,14 @@ function Diagram() {
                         {team}
                     </Text>
                 </Modal.Header>
-                <Modal.Body>
-
+                <Modal.Body css={{ paddingTop: "25px" }}>
+                    <Input
+                        bordered
+                        labelPlaceholder="Node name"
+                        labelRight={`.${ens}`}
+                        color="primary" />
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer css={{ paddingTop: "0px" }} >
                     <Button auto onPress={closeHandler} css={{ width: "100%" }}>
                         Add
                     </Button>
