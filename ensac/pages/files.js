@@ -6,6 +6,7 @@ import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
+import { Input, Grid } from "@nextui-org/react";
 import { Content } from './Content';
 import { Logo } from "./Logo.js";
 
@@ -142,40 +143,41 @@ export default function Files() {
   return (
 
     <div>
-      <Content />
-      <Table
-        aria-label="Example table with custom cells"
-        css={{
-          height: "auto",
-          minWidth: "100%",
-        }}
-        selectionMode="none"
-      >
-        <Table.Header columns={columns}>
-          {(column) => (
-            <Table.Column
-              key={column.uid}
-              hideHeader={column.uid === "actions"}
-              align={column.uid === "actions" ? "center" : "start"}
-            >
-              {column.name}
-            </Table.Column>
-          )}
-        </Table.Header>
-        <Table.Body items={users}>
-          {(item) => (
-            <Table.Row>
-              {(columnKey) => (
-                <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
-              )}
-            </Table.Row>
-          )}
-        </Table.Body>
-      </Table>
-      <Row justify="end" align="center">
-        <Button onClick={() => alert("add file clicked")}>Add File</Button>
-      </Row>
+      <div style={{ marginLeft: "80px", marginRight: "80px" }}>
+        <Table
+          aria-label="Example table with custom cells"
+          css={{
+            height: "auto"
+          }}
+          selectionMode="none"
+        >
+          <Table.Header columns={columns}>
+            {(column) => (
+              <Table.Column
+                key={column.uid}
+                hideHeader={column.uid === "actions"}
+                align={column.uid === "actions" ? "center" : "start"}
+              >
+                {column.name}
+              </Table.Column>
+            )}
+          </Table.Header>
+          <Table.Body items={users}>
+            {(item) => (
+              <Table.Row>
+                {(columnKey) => (
+                  <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
+                )}
+              </Table.Row>
+            )}
+          </Table.Body>
+        </Table>
+        <Row style={{ marginTop: "20px" }} justify="end" align="center">
+          <Button onClick={() => alert("add file clicked")}>Add File</Button>
+        </Row>
+      </div>
     </div>
+
 
   );
 
