@@ -1,5 +1,5 @@
 
 export const Logo = () => (
-  <img src={"logo.png"} width="50" />
+  <a href="/"><img src={"logo.png"} width="80px" /></a>
 
 );
