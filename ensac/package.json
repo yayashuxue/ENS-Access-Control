@@ -19,9 +19,11 @@
   "devDependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@graphprotocol/client-cli": "^2.2.15",
+    "@lit-protocol/sdk-browser": "^1.1.234",
     "@mui/material": "^5.10.12",
     "@nextui-org/react": "^1.0.0-beta.10",
+    "@syncfusion/ej2-data": "^20.3.50",
+    "@syncfusion/ej2-react-diagrams": "^20.3.50",
     "antd": "^4.24.1",
     "bootstrap": "^5.2.2",
     "next": "^13.0.2",

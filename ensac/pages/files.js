@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
+import { Navbar, Link, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
 import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
+import { Content } from './Content';
+import { Logo } from "./Logo.js";
 
 export default function Files() {
+  const [variant, setVariant] = React.useState("static");
+
+  const variants = ["static", "floating", "sticky"];
   const columns = [
     { name: "FILE NAME", uid: "name" },
     { name: "OWNER", uid: "role" },
@@ -68,9 +73,9 @@ export default function Files() {
     },
   ];
 
-//   const addFile() => {
-//     alert("add file clicked")
-//   }
+  //   const addFile() => {
+  //     alert("add file clicked")
+  //   }
 
 
   const renderCell = (user, columnKey) => {
@@ -135,39 +140,41 @@ export default function Files() {
     }
   };
   return (
+
     <div>
-    <Table
-      aria-label="Example table with custom cells"
-      css={{
-        height: "auto",
-        minWidth: "100%",
-      }}
-      selectionMode="none"
-    >
-      <Table.Header columns={columns}>
-        {(column) => (
-          <Table.Column
-            key={column.uid}
-            hideHeader={column.uid === "actions"}
-            align={column.uid === "actions" ? "center" : "start"}
-          >
-            {column.name}
-          </Table.Column>
-        )}
-      </Table.Header>
-      <Table.Body items={users}>
-        {(item) => (
-          <Table.Row>
-            {(columnKey) => (
-              <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
-            )}
-          </Table.Row>
-        )}
-      </Table.Body>
-    </Table>
-    <Row justify="end" align="center">
+      <Content />
+      <Table
+        aria-label="Example table with custom cells"
+        css={{
+          height: "auto",
+          minWidth: "100%",
+        }}
+        selectionMode="none"
+      >
+        <Table.Header columns={columns}>
+          {(column) => (
+            <Table.Column
+              key={column.uid}
+              hideHeader={column.uid === "actions"}
+              align={column.uid === "actions" ? "center" : "start"}
+            >
+              {column.name}
+            </Table.Column>
+          )}
+        </Table.Header>
+        <Table.Body items={users}>
+          {(item) => (
+            <Table.Row>
+              {(columnKey) => (
+                <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
+              )}
+            </Table.Row>
+          )}
+        </Table.Body>
+      </Table>
+      <Row justify="end" align="center">
         <Button onClick={() => alert("add file clicked")}>Add File</Button>
-    </Row>
+      </Row>
     </div>
 
   );
