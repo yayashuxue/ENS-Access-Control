@@ -2,8 +2,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Diagram from '../components/diagram'
+import React from "react";
+import { Navbar, Button, Link, Text, Card, Radio } from "@nextui-org/react";
+import { Layout } from "./Layout.js";
+import { Logo } from "./Logo.js";
 
 export default function Home() {
+
   return (
     <div className={styles.container}>
       <Head>
