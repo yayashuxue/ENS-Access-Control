@@ -1,20 +1,41 @@
 import '../styles/globals.css'
-import Head from 'next/head';
+import React from "react";
+import { registerLicense } from '@syncfusion/ej2-base';
+import { Navbar, Button, Link, Text, Card, Radio } from "@nextui-org/react";
+import { Layout } from "./Layout.js";
+import { Logo } from "./Logo.js";
+import Image from 'next/image'
+
+registerLicense('ORg4AjUWIQA/Gnt2VVhjQlFaclhJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRd0RjXH5Yc3BWQ2hfWEE=');
 
 function MyApp({ Component, pageProps }) {
-  return (
-    <>
-      <Head>
-        <title>Org3</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="assets/css/fontAwesome5Pro.css" />
-        <link rel="stylesheet" href="assets/css/flaticon.css" />
-        <link rel="stylesheet" href="assets/css/default.css" />
-       
-      </Head>
-      <Component {...pageProps} />
-    </>
-  )
+  const [variant, setVariant] = React.useState("static");
+  const variants = ["static", "floating", "sticky"];
+
+  return <>
+    <Layout>
+      <Navbar isBordered variant={variant}>
+        <Navbar.Brand>
+          <Logo />
+        </Navbar.Brand>
+        <Navbar.Content hideIn="xs">
+          <Navbar.Link href="/files">Files</Navbar.Link>
+          <Navbar.Link href="/">Company</Navbar.Link>
+        </Navbar.Content>
+        <Navbar.Content>
+          <Navbar.Link color="inherit" href="#">
+            Login
+          </Navbar.Link>
+          <Navbar.Item>
+            <Button auto flat as={Link} href="#">
+              Sign Up
+            </Button>
+          </Navbar.Item>
+        </Navbar.Content>
+      </Navbar>
+    </Layout>
+    <Component {...pageProps} />
+  </>
 }
 
 export default MyApp
