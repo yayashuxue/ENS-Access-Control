@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
@@ -66,6 +67,10 @@ export default function Files() {
       email: "william.howard@example.com",
     },
   ];
+
+//   const addFile() => {
+//     alert("add file clicked")
+//   }
 
 
   const renderCell = (user, columnKey) => {
@@ -161,7 +166,7 @@ export default function Files() {
       </Table.Body>
     </Table>
     <Row justify="end" align="center">
-        <Button>Add File</Button>
+        <Button onClick={() => alert("add file clicked")}>Add File</Button>
     </Row>
     </div>
 
