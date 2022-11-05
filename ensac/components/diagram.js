@@ -59,10 +59,17 @@ function Diagram() {
     const [visible, setVisible] = React.useState(false);
     const [team, setTeam] = React.useState("Default team");
     const [ens, setEns] = React.useState("Default ENS");
+    const [add, setAdd] = React.useState(false);
+
     const handler = (id) => {
+        setAdd(false);
         setTeam(getPrefix(id));
         setEns(id);
         setVisible(true);
+    }
+
+    const addHandler = () => {
+        setAdd(true);
     }
 
     const closeHandler = () => {
@@ -133,22 +140,39 @@ function Diagram() {
             open={visible}
             onClose={closeHandler}
         >
-            <Modal.Header>
-                <Text id="modal-title" b size={18} >
-                    {team}
-                </Text>
-            </Modal.Header>
-            <Modal.Body>
-                <Text css={{ textAlign: "center" }}>
-                    ENS domain: {ens}
-                </Text>
+            {add ? <>
+                <Modal.Header>
+                    <Text id="modal-title" b size={18} >
+                        {team}
+                    </Text>
+                </Modal.Header>
+                <Modal.Body>
 
-            </Modal.Body>
-            <Modal.Footer>
-                <Button auto onPress={closeHandler} css={{ width: "100%" }}>
-                    Add Under This Node
-                </Button>
-            </Modal.Footer>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button auto onPress={closeHandler} css={{ width: "100%" }}>
+                        Add
+                    </Button>
+                </Modal.Footer>
+            </> : <>
+                <Modal.Header>
+                    <Text id="modal-title" b size={18} >
+                        {team}
+                    </Text>
+                </Modal.Header>
+                <Modal.Body>
+                    <Text css={{ textAlign: "center" }}>
+                        ENS domain: {ens}
+                    </Text>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button auto onPress={addHandler} css={{ width: "100%" }}>
+                        Add Under This Node
+                    </Button>
+                </Modal.Footer>
+            </>}
+
         </Modal>
     </DiagramComponent>;
 }
