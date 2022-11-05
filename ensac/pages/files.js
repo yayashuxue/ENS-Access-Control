@@ -6,6 +6,7 @@ import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
+import { Content } from './Content';
 import { Logo } from "./Logo.js";
 
 export default function Files() {
@@ -72,9 +73,9 @@ export default function Files() {
     },
   ];
 
-//   const addFile() => {
-//     alert("add file clicked")
-//   }
+  //   const addFile() => {
+  //     alert("add file clicked")
+  //   }
 
 
   const renderCell = (user, columnKey) => {
@@ -141,57 +142,39 @@ export default function Files() {
   return (
 
     <div>
-    <Navbar isBordered variant={variant}>
-        <Navbar.Brand>
-          <Logo />
-        </Navbar.Brand>
-        <Navbar.Content hideIn="xs">
-          <Navbar.Link href="/files">Files</Navbar.Link>
-          <Navbar.Link href="#">Company</Navbar.Link>
-        </Navbar.Content>
-        <Navbar.Content>
-          <Navbar.Link color="inherit" href="#">
-            Login
-          </Navbar.Link>
-          <Navbar.Item>
-            <Button auto flat as={Link} href="#">
-              Sign Up
-            </Button>
-          </Navbar.Item>
-        </Navbar.Content>
-      </Navbar>
-    <Table
-      aria-label="Example table with custom cells"
-      css={{
-        height: "auto",
-        minWidth: "100%",
-      }}
-      selectionMode="none"
-    >
-      <Table.Header columns={columns}>
-        {(column) => (
-          <Table.Column
-            key={column.uid}
-            hideHeader={column.uid === "actions"}
-            align={column.uid === "actions" ? "center" : "start"}
-          >
-            {column.name}
-          </Table.Column>
-        )}
-      </Table.Header>
-      <Table.Body items={users}>
-        {(item) => (
-          <Table.Row>
-            {(columnKey) => (
-              <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
-            )}
-          </Table.Row>
-        )}
-      </Table.Body>
-    </Table>
-    <Row justify="end" align="center">
+      <Content />
+      <Table
+        aria-label="Example table with custom cells"
+        css={{
+          height: "auto",
+          minWidth: "100%",
+        }}
+        selectionMode="none"
+      >
+        <Table.Header columns={columns}>
+          {(column) => (
+            <Table.Column
+              key={column.uid}
+              hideHeader={column.uid === "actions"}
+              align={column.uid === "actions" ? "center" : "start"}
+            >
+              {column.name}
+            </Table.Column>
+          )}
+        </Table.Header>
+        <Table.Body items={users}>
+          {(item) => (
+            <Table.Row>
+              {(columnKey) => (
+                <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
+              )}
+            </Table.Row>
+          )}
+        </Table.Body>
+      </Table>
+      <Row justify="end" align="center">
         <Button onClick={() => alert("add file clicked")}>Add File</Button>
-    </Row>
+      </Row>
     </div>
 
   );
