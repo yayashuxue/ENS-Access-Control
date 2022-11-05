@@ -9,10 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@syncfusion/ej2-data": "^20.3.50",
-    "@syncfusion/ej2-react-diagrams": "^20.3.50",
-    "next": "13.0.2",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.10.12",
+    "@nextui-org/react": "^1.0.0-beta.10",
+    "antd": "^4.24.1",
+    "bootstrap": "^5.2.2",
+    "next": "^13.0.2",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.5.0",
+    "react-dom": "^18.2.0"
   }
 }
