@@ -1,53 +1,83 @@
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React from "react";
+import { Modal, Button, Text, Input, Row, Checkbox } from "@nextui-org/react";
 import { DiagramComponent, Inject, DataBinding, HierarchicalTree, SnapConstraints, DiagramConstraints } from "@syncfusion/ej2-react-diagrams";
 import { DataManager, Query } from '@syncfusion/ej2-data';
+
+
 //Initializes data source
 let data = [{
-    Id: "Flamingle.eth",
+    ens: "Flamingle.eth",
 },
 {
-    Id: "Tech.Flamingle.eth",
-    Team: "Flamingle.eth"
+    ens: "Tech.Flamingle.eth",
+    team: "Flamingle.eth"
 },
 {
-    Id: "Design.Flamingle.eth",
-    Team: "Flamingle.eth"
+    ens: "Design.Flamingle.eth",
+    team: "Flamingle.eth"
 },
 {
-    Id: "R&D.Tech.Flamingle.eth",
-    Team: "Tech.Flamingle.eth"
+    ens: "R&D.Tech.Flamingle.eth",
+    team: "Tech.Flamingle.eth"
 },
 {
-    Id: "Test.Tech.Flamingle.eth",
-    Team: "Tech.Flamingle.eth"
+    ens: "Test.Tech.Flamingle.eth",
+    team: "Tech.Flamingle.eth"
 },
 {
-    Id: "DS.Tech.Flamingle.eth",
-    Team: "Tech.Flamingle.eth"
+    ens: "DS.Tech.Flamingle.eth",
+    team: "Tech.Flamingle.eth"
 },
 {
-    Id: "UI.Design.Flamingle.eth",
-    Team: "Design.Flamingle.eth"
+    ens: "UI.Design.Flamingle.eth",
+    team: "Design.Flamingle.eth"
 },
 {
-    Id: "UX.Design.Flamingle.eth",
-    Team: "Design.Flamingle.eth"
+    ens: "UX.Design.Flamingle.eth",
+    team: "Design.Flamingle.eth"
 },
 {
-    Id: "Product.Design.Flamingle.eth",
-    Team: "Design.Flamingle.eth"
+    ens: "Product.Design.Flamingle.eth",
+    team: "Design.Flamingle.eth"
 },
 ];
 let items = new DataManager(data, new Query().take(7));
 
-function node(props) {
-    console.log(props);
-    return <button type="button" id="button">{props.data.Id}</button>
+
+function getPrefix(input) {
+    let output = "";
+    for (let i = 0; i < input.length; i++) {
+        if (input[i] == ".") break;
+        output += input[i];
+    }
+
+    return output;
 }
 
 function Diagram() {
+    const [visible, setVisible] = React.useState(false);
+    const [team, setTeam] = React.useState("Default team");
+    const [ens, setEns] = React.useState("Default ENS");
+    const handler = (id) => {
+        setTeam(getPrefix(id));
+        setEns(id);
+        setVisible(true);
+    }
+
+    const closeHandler = () => {
+        setVisible(false);
+    };
+
+    function node(props) {
+        console.log(props);
+        return <div>
+            <Button bordered auto shadow onPress={() => { handler(props.data.ens) }} css={{ width: "150px", height: "50px" }}>
+                {getPrefix(props.data.ens)}
+            </Button>
+        </div>
+    }
+
     return <DiagramComponent id="container" width={'100%'} height={'530px'} constraints={DiagramConstraints.Default & ~DiagramConstraints.PageEditable} snapSettings={{
         constraints: SnapConstraints.None
     }}
@@ -67,8 +97,8 @@ function Diagram() {
         }}
         //Configures data source for diagram
         dataSourceSettings={{
-            id: 'Id',
-            parentId: 'Team',
+            id: 'ens',
+            parentId: 'team',
             dataManager: items
         }}
         //Sets the default properties for nodes and connectors
@@ -97,6 +127,29 @@ function Diagram() {
             connector.type = 'Orthogonal';
             return connector;
         }}><Inject services={[DataBinding, HierarchicalTree]} />
+        <Modal
+            closeButton
+            aria-labelledby="modal-title"
+            open={visible}
+            onClose={closeHandler}
+        >
+            <Modal.Header>
+                <Text id="modal-title" b size={18} >
+                    {team}
+                </Text>
+            </Modal.Header>
+            <Modal.Body>
+                <Text css={{ textAlign: "center" }}>
+                    ENS domain: {ens}
+                </Text>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button auto onPress={closeHandler} css={{ width: "100%" }}>
+                    Add Under This Node
+                </Button>
+            </Modal.Footer>
+        </Modal>
     </DiagramComponent>;
 }
 
