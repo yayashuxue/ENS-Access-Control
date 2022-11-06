@@ -67,7 +67,7 @@ function MyApp({ Component, pageProps }) {
           <Logo />
         </Navbar.Brand>
         {account.isConnected && isEns ?
-          <Navbar.Content hideIn="xs">
+          <Navbar.Content variant="highlight" hideIn="xs">
             <Navbar.Link href="/" isActive={router.pathname == "/"}>Organization</Navbar.Link>
             <Navbar.Link href="/files" isActive={router.pathname == "/files"} >Files</Navbar.Link>
           </Navbar.Content>
