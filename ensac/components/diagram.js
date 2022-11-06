@@ -17,6 +17,7 @@ let new_data = new Set()
 const getSubdomainData = async (domainName) => {
 
     let data = await findSubdomains(domainName)
+    console.log(data.data);
     new_data = []
 
     new_data.push({ens: data.data.domains[0].name, wallet: data.data.domains[0].id})
@@ -33,7 +34,7 @@ const buildUpArray = (parent_domains) => {
         return;
     }
     for(let i = 0; i < parent_domains.subdomains.length; ++i){
-        new_data.push({ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].id, parent: parent_domains.name})
+        new_data.push({ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].owner.id, parent: parent_domains.name})
         buildUpArray(parent_domains.subdomains[i])
     }
 }
