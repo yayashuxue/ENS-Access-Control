@@ -90,7 +90,7 @@ function MyApp({ Component, pageProps }) {
                 </Popover.Content>
               </Popover>
               :
-              <Web3Button></Web3Button>
+              <Web3Button style={{ marginRight: "120px" }}></Web3Button>
             }
           </Navbar.Item>
         </Navbar.Content>

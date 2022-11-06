@@ -5,3 +5,7 @@ body {
 span {
     font-family: "Poppins";
 }
+
+.lcm-modal-overlay {
+    z-index: 9999 !important;
+}
