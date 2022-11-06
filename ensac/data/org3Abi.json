@@ -5,32 +5,6 @@
         "type": "constructor"
     },
     {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "string",
-                "name": "primaryDomain",
-                "type": "string"
-            }
-        ],
-        "name": "CreateOrganization",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "string",
-                "name": "filename",
-                "type": "string"
-            }
-        ],
-        "name": "createFile",
-        "type": "event"
-    },
-    {
         "inputs": [
             {
                 "internalType": "string",
