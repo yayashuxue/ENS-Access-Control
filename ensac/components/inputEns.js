@@ -7,11 +7,10 @@ import { findSubdomains } from '../utils/graph';
 function InputEns(props) {
   const { setIsEns } = props;
   const [ens, setEns] = useState("");
-  const [intheOrganization, setIntheOrganization] = useState(true);
 
   const handleGo = async (event) => {
     event.preventDefault();
-    await getSubdomainData(ens);
+    let intheOrganization = await getSubdomainData(ens);
     if (intheOrganization) {
       sessionStorage.setItem('isEns', ens);
       setIsEns(true);
@@ -25,9 +24,9 @@ function InputEns(props) {
     let data = await findSubdomains(domainName)
     console.log(data.data);
 
-    //setIntheOrganization(true/false)
 
-    return;
+    //return (true/false)
+    return false;
   }
 
 
