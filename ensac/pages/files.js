@@ -12,12 +12,17 @@ import pinFileToIPFS from '../utils/pinFileToIPFS';
 import Encrypt from '../utils/encrypt';
 import org3Abi from '../data/org3Abi.json'
 import { useRef } from 'react';
+import { useEffect } from 'react';
 
-export default function Files() {
+export default function Files(props) {
   const [file, setFile] = useState();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState("");
   const [hash, setHash] = useState("")
+
+  useEffect(() => {
+    console.log(props.isEns);
+  }, []);
 
   const inputFile = useRef(null)
 

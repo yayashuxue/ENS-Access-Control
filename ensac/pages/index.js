@@ -9,7 +9,7 @@ import InputEns from '../components/inputEns';
 import { useEffect } from 'react';
 
 export default function Home(props) {
-  const { account } = useAccount;
+  const { account } = useAccount();
   const { isEns, setIsEns } = props;
 
   useEffect(() => {
@@ -31,14 +31,11 @@ export default function Home(props) {
       }
 
       {account.isConnected && !isEns &&
-        <>
-          <h1>Input ENS</h1>
-          <InputEns />
-        </>
+        <InputEns isEns={isEns} setIsEns={setIsEns} />
       }
 
       {!account.isConnected && !isEns &&
-        <LandingPage></LandingPage>
+        <LandingPage />
       }
 
 
