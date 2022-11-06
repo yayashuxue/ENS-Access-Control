@@ -1,90 +1,36 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Button, Text, Input, Row, Checkbox } from "@nextui-org/react";
 import { DiagramComponent, Inject, DataBinding, HierarchicalTree, SnapConstraints, DiagramConstraints } from "@syncfusion/ej2-react-diagrams";
 import { DataManager, Query } from '@syncfusion/ej2-data';
 import LanguageIcon from '@mui/icons-material/Language';
 import WalletIcon from '@mui/icons-material/Wallet';
+import {findSubdomains} from "../utils/graph";
 
+let new_data = new Set()
+const getSubdomainData = async (domainName) => {
 
-//Initializes data source
-let data = [{
-    ens: "Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Tech.Flamingle.eth",
-    parent: "Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Design.Flamingle.eth",
-    parent: "Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "R&D.Tech.Flamingle.eth",
-    parent: "Tech.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Test.Tech.Flamingle.eth",
-    parent: "Tech.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "DS.Tech.Flamingle.eth",
-    parent: "Tech.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "UI.Design.Flamingle.eth",
-    parent: "Design.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "UX.Design.Flamingle.eth",
-    parent: "Design.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Product.Design.Flamingle.eth",
-    parent: "Design.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Harry.Product.Design.Flamingle.eth",
-    parent: "Product.Design.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Mars.Product.Design.Flamingle.eth",
-    parent: "Product.Design.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Liz.UI.Design.Flamingle.eth",
-    parent: "UI.Design.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Dish.R&D.Tech.Flamingle.eth",
-    parent: "R&D.Tech.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Jack.R&D.Tech.Flamingle.eth",
-    parent: "R&D.Tech.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-{
-    ens: "Jason.R&D.Tech.Flamingle.eth",
-    parent: "R&D.Tech.Flamingle.eth",
-    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
-},
-];
-let items = new DataManager(data, new Query().take(7));
+    let data = await findSubdomains(domainName)
+    new_data = []
 
+    new_data.push({ens: data.data.domains[0].name, wallet: data.data.domains[0].id})
+
+    buildUpArray(data.data.domains[0])
+    console.log(new_data)
+    console.log(new_data.length)
+
+    return;
+}
+
+const buildUpArray = (parent_domains) => {
+    if(!parent_domains.subdomains){
+        return;
+    }
+    for(let i = 0; i < parent_domains.subdomains.length; ++i){
+        new_data.push({ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].id, parent: parent_domains.name})
+        buildUpArray(parent_domains.subdomains[i])
+    }
+}
 
 function getPrefix(input) {
     let output = "";
@@ -102,6 +48,16 @@ function Diagram() {
     const [wallet, setWallet] = React.useState("Default wallet");
     const [ens, setEns] = React.useState("Default ENS");
     const [add, setAdd] = React.useState(false);
+    const [items, setItems] = React.useState(null);
+
+    useEffect(()=>{
+        // Event.preventDefault();
+        const call = async () => {
+            await getSubdomainData("julieshi.eth");
+            setItems(new DataManager(new_data, new Query().take(7)));
+        }
+        call();
+    }, [])
 
     const handler = (data) => {
         setAdd(false);
@@ -119,6 +75,7 @@ function Diagram() {
         setVisible(false);
     };
 
+
     function node(props) {
         console.log(props);
         return <div>
@@ -127,6 +84,8 @@ function Diagram() {
             </Button>
         </div>
     }
+
+
 
     return <DiagramComponent id="container" width={'100%'} height={'530px'} constraints={DiagramConstraints.Default & ~DiagramConstraints.PageEditable} snapSettings={{
         constraints: SnapConstraints.None

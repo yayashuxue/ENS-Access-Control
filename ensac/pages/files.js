@@ -13,8 +13,9 @@ import { useContractRead } from '@web3modal/react'
 import ContractPusher from '../components/contractPusher';
 import org3Abi from '../data/org3Abi.json'
 import { chains } from '@web3modal/ethereum'
+import { useEffect } from 'react';
 
-export default function Files() {
+export default function Files(props) {
   const [file, setFile] = useState();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState("");
@@ -106,11 +107,11 @@ export default function Files() {
     const encryptedStringBlob = await (await fetch(encryptedString)).blob();
 
     try {
-        const decryptedHash = await Encrypt.decryptHash(encryptedStringBlob, encryptedSymmetricKey, ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]);
-        console.log(decryptedHash)
-        setDecryptedHash(decryptedHash)
+      const decryptedHash = await Encrypt.decryptHash(encryptedStringBlob, encryptedSymmetricKey, ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]);
+      console.log(decryptedHash)
+      setDecryptedHash(decryptedHash)
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
 
     // Set decrypted string
@@ -149,6 +150,7 @@ export default function Files() {
 
     <div>
       <div style={{ marginLeft: "80px", marginRight: "80px" }}>
+        <h1>Files</h1>
         <Table
           aria-label="Example table with custom cells"
           css={{
@@ -181,18 +183,18 @@ export default function Files() {
           <Button onClick={() => inputFile.current.click()}>
             Upload File Securely
           </Button>
-          <input type="file" name="file" ref={inputFile} onChange={selectFile} style={{display:"none"}} />
+          <input type="file" name="file" ref={inputFile} onChange={selectFile} style={{ display: "none" }} />
         </Row>
       </div>
       <Modal
         closeButton
         aria-labelledby="modal-title"
-        open={visible&&file&&file.name}
-        onClose={()=>setVisible(false)}
+        open={visible && file && file.name}
+        onClose={() => setVisible(false)}
       >
-      <Modal.Header>
+        <Modal.Header>
           <Text id="modal-title" size={18}>
-            Uploading <span style={{fontWeight:"600"}}>{file?file.name:""}</span>
+            Uploading <span style={{ fontWeight: "600" }}>{file ? file.name : ""}</span>
           </Text>
         </Modal.Header>
         <Modal.Body>
@@ -206,28 +208,28 @@ export default function Files() {
             fullWidth
             color="primary"
             size="lg"
-            value={file?file.name:""}
+            value={file ? file.name : ""}
           />
           <Text size={16}>
             Who can access?
           </Text>
           <Input
-          readOnly={loading}
-          placeholder={"tech.flamingle.eth"}
+            readOnly={loading}
+            placeholder={"tech.flamingle.eth"}
             clearable
             bordered
             fullWidth
             color="primary"
             size="lg"
           />
-          
+
         </Modal.Body>
         <Modal.Footer>
-          <Button auto flat color="error" onClick={()=>setVisible(false)} disabled={loading}>
+          <Button auto flat color="error" onClick={() => setVisible(false)} disabled={loading}>
             Cancel
           </Button>
           <Button auto onClick={uploadFile} disabled={loading}>
-            {!loading?"Confirm":loading+"..."}
+            {!loading ? "Confirm" : loading + "..."}
           </Button>
         </Modal.Footer>
       </Modal>

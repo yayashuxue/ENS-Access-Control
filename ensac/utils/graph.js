@@ -1,17 +1,19 @@
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
 
-const APIURL = 'https://gateway.thegraph.com/api/5ca87daf993b060c116315daa3b2b9c3/subgraphs/id/EjtE3sBkYYAwr45BASiFp8cSZEvd1VHTzzYFvJwQUuJx'
+// new version of graph is still quite unstable
+// const APIURL = 'https://gateway.thegraph.com/api/5ca87daf993b060c116315daa3b2b9c3/subgraphs/id/EjtE3sBkYYAwr45BASiFp8cSZEvd1VHTzzYFvJwQUuJx'
+const APIURL = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
 
 export const GraphClient = new ApolloClient({
   uri: APIURL,
   cache: new InMemoryCache(),
 })
 
-export const findSubdomains = (ensName) => {
+export const findSubdomains = async (ensName) => {
     const query = 
     `
     {
-        domains (where: {name:"julieshi.eth"}){
+        domains (where: {name:"${ensName}"}){
             id
             name
             labelName
@@ -33,13 +35,10 @@ export const findSubdomains = (ensName) => {
         }
     }
     `
-    console.log("jere");
-    GraphClient
+    const data = await GraphClient
     .query({
         query: gql(query),
     })
-    .then((data) => console.log('Subgraph data: ', data))
-    .catch((err) => {
-        console.log('Error fetching data: ', err)
-    })
+
+    return data;
 }
