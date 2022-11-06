@@ -5,7 +5,7 @@ import { DiagramComponent, Inject, DataBinding, HierarchicalTree, SnapConstraint
 import { DataManager, Query } from '@syncfusion/ej2-data';
 import LanguageIcon from '@mui/icons-material/Language';
 import WalletIcon from '@mui/icons-material/Wallet';
-import { findSubdomains, findAddress} from "../utils/graph";
+import { findSubdomains, findAddress } from "../utils/graph";
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { namehash } from '@ensdomains/ensjs/utils/normalise'
 import { chains } from '@web3modal/ethereum'
@@ -15,14 +15,15 @@ import { Web3Button, useAccount } from '@web3modal/react';
 
 
 let new_data = new Set()
+let root_address = "";
 const getSubdomainData = async (domainName) => {
 
     let data = await findSubdomains(domainName)
     console.log(data.data);
     new_data = []
 
-    new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].resolvedAddress ? data.data.domains[0].resolvedAddress.id : "Unassigned"})
-
+    new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].resolvedAddress ? data.data.domains[0].resolvedAddress.id : "Unassigned" })
+    root_address = new_data[0].wallet;
     buildUpArray(data.data.domains[0])
     console.log(new_data)
     console.log(new_data.length)
@@ -34,8 +35,8 @@ const buildUpArray = (parent_domains) => {
     if (!parent_domains.subdomains) {
         return;
     }
-    for(let i = 0; i < parent_domains.subdomains.length; ++i){
-        new_data.push({ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].resolvedAddress ? parent_domains.subdomains[i].resolvedAddress.id : "Unassigned", parent: parent_domains.name})
+    for (let i = 0; i < parent_domains.subdomains.length; ++i) {
+        new_data.push({ ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].resolvedAddress ? parent_domains.subdomains[i].resolvedAddress.id : "Unassigned", parent: parent_domains.name })
         buildUpArray(parent_domains.subdomains[i])
     }
 }
@@ -57,6 +58,7 @@ function Diagram() {
     const [ens, setEns] = React.useState("");
     const [add, setAdd] = React.useState(false);
     const [items, setItems] = React.useState(null);
+    const [disableAdd, setDisableAdd] = React.useState(true);
     // const [parentName, setParentName] = React.useState("")
     const [nodeName, setNodeName] = React.useState("");
     const [walletAddress, setWalletAddress] = React.useState("");
@@ -66,6 +68,11 @@ function Diagram() {
 
     useEffect(() => {
         // Event.preventDefault();
+        if (root_address.toLowerCase() == account.address.toLowerCase()) {
+            setDisableAdd(false);
+        } else {
+            setDisableAdd(true);
+        }
         const call = async () => {
             let ens = sessionStorage.getItem("isEns");
             if (ens != "" && ens != "false") {
@@ -80,6 +87,7 @@ function Diagram() {
     }, [])
 
     const handler = (data) => {
+
         setAdd(false);
         setParent(getPrefix(data.ens));
         setWallet(data.wallet)
@@ -92,8 +100,8 @@ function Diagram() {
     }
 
     async function handleWalletAddress(event) {
-            setWalletAddress(event.target.value)
-        
+        setWalletAddress(event.target.value)
+
     }
 
     const addHandler = () => {
@@ -104,12 +112,12 @@ function Diagram() {
         setVisible(false);
     };
 
-    async function translate(name){
-        if(name.endsWith(".eth")){
+    async function translate(name) {
+        if (name.endsWith(".eth")) {
             let address = await findAddress(name);
             console.log(address.data.domains[0].owner.id);
             setWalletAddress(address.data.domains[0].owner.id)
-        } 
+        }
     }
 
     const addToENSHandler = async () => {
@@ -242,7 +250,7 @@ function Diagram() {
 
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button auto onPress={addHandler} css={{ width: "100%" }}>
+                    <Button auto onPress={addHandler} css={{ width: "100%" }} disabled={disableAdd}>
                         Add Under This Node
                     </Button>
                 </Modal.Footer>
