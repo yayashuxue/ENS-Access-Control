@@ -31,12 +31,12 @@ function MyApp({ Component, pageProps }) {
 
 
   useEffect(() => {
-    if (sessionStorage.getItem("isEns") == null || sessionStorage.getItem("isEns") == 'false') {
-      setIsEns(false);
-    }
+    console.log("session " + sessionStorage.getItem("isEns"));
 
-    if (sessionStorage.getItem("isEns") == 'true') {
+    if (sessionStorage.getItem("isEns") != null && sessionStorage.getItem("isEns") != "" && sessionStorage.getItem("isEns") != 'false') {
       setIsEns(true);
+    } else {
+      setIsEns(false);
     }
   }, [])
 

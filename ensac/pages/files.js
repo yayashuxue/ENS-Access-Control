@@ -20,10 +20,6 @@ export default function Files(props) {
   const [loading, setLoading] = useState("");
   const [hash, setHash] = useState("")
 
-  useEffect(() => {
-    console.log(props.isEns);
-  }, []);
-
   const inputFile = useRef(null)
 
   const columns = [
