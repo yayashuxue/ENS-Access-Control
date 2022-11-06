@@ -8,38 +8,47 @@ import { DataManager, Query } from '@syncfusion/ej2-data';
 //Initializes data source
 let data = [{
     ens: "Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Tech.Flamingle.eth",
-    team: "Flamingle.eth"
+    team: "Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Design.Flamingle.eth",
-    team: "Flamingle.eth"
+    team: "Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "R&D.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth"
+    team: "Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Test.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth"
+    team: "Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "DS.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth"
+    team: "Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "UI.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth"
+    team: "Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "UX.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth"
+    team: "Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Product.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth"
+    team: "Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 ];
 let items = new DataManager(data, new Query().take(7));
@@ -58,13 +67,15 @@ function getPrefix(input) {
 function Diagram() {
     const [visible, setVisible] = React.useState(false);
     const [team, setTeam] = React.useState("Default team");
+    const [wallet, setWallet] = React.useState("Default wallet");
     const [ens, setEns] = React.useState("Default ENS");
     const [add, setAdd] = React.useState(false);
 
-    const handler = (id) => {
+    const handler = (data) => {
         setAdd(false);
-        setTeam(getPrefix(id));
-        setEns(id);
+        setTeam(getPrefix(data.ens));
+        setWallet(data.wallet)
+        setEns(data.ens);
         setVisible(true);
     }
 
@@ -79,7 +90,7 @@ function Diagram() {
     function node(props) {
         console.log(props);
         return <div>
-            <Button bordered auto shadow onPress={() => { handler(props.data.ens) }} css={{ width: "150px", height: "50px" }}>
+            <Button bordered auto shadow onPress={() => { handler(props.data) }} css={{ width: "150px", height: "50px" }}>
                 {getPrefix(props.data.ens)}
             </Button>
         </div>
@@ -151,9 +162,15 @@ function Diagram() {
                         bordered
                         labelPlaceholder="Node name"
                         labelRight={`.${ens}`}
+                        color="primary"
+                        css={{ marginBottom: "30px" }}
+                    />
+                    <Input
+                        bordered
+                        labelPlaceholder="Wallet Address"
                         color="primary" />
                 </Modal.Body>
-                <Modal.Footer css={{ paddingTop: "0px" }} >
+                <Modal.Footer >
                     <Button auto onPress={closeHandler} css={{ width: "100%" }}>
                         Add
                     </Button>
@@ -165,8 +182,11 @@ function Diagram() {
                     </Text>
                 </Modal.Header>
                 <Modal.Body>
-                    <Text css={{ textAlign: "center" }}>
+                    <Text css={{ textAlign: "left", marginBottom: "0" }}>
                         ENS domain: {ens}
+                    </Text>
+                    <Text css={{ textAlign: "left" }}>
+                        Wallet address: {wallet}
                     </Text>
 
                 </Modal.Body>
