@@ -112,7 +112,7 @@ function Diagram() {
     function node(props) {
         console.log(props);
         return <div>
-            <Button bordered auto shadow onPress={() => { handler(props.data) }} css={{ width: "150px", height: "50px" }}>
+            <Button bordered auto shadow onPress={() => { handler(props.data) }} css={{ width: "150px", height: "50px", backgroundColor: "#ffffff" }}>
                 {getPrefix(props.data.ens)}
             </Button>
         </div>

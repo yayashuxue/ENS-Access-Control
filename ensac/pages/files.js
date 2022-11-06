@@ -12,7 +12,8 @@ import { useRef } from 'react';
 import { useContractRead } from '@web3modal/react'
 import ContractPusher from '../components/contractPusher';
 import org3Abi from '../data/org3Abi.json'
-import { chains } from '@web3modal/ethereum'
+import { chains } from '@web3modal/ethereum';
+import { Container } from '@nextui-org/react';
 
 export default function Files(props) {
   const [file, setFile] = useState();
@@ -53,10 +54,10 @@ export default function Files(props) {
   }
   const { data, error, isLoading, refetch } = useContractRead(config)
 
-  useState(()=>{
-    const getData = async ()=>{
+  useState(() => {
+    const getData = async () => {
       console.log("fetch")
-      setInterval(async()=>{
+      setInterval(async () => {
         await refetch();
         console.log(fileList)
       }, 10000
@@ -66,17 +67,17 @@ export default function Files(props) {
     getData()
   }, [refetch])
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(data)
-    if(!isLoading && data){
+    if (!isLoading && data) {
       const fileCount = data.length / 4;
       const allFiles = [];
       for (let i = 0; i < fileCount; i += 1) {
         const f = {
           filename: data[i],
-          encryptedDescriptionString: data[fileCount+i],
-          encryptedSymmetricKey: data[fileCount*2+i],
-          ensdomains: data[fileCount*3+i]
+          encryptedDescriptionString: data[fileCount + i],
+          encryptedSymmetricKey: data[fileCount * 2 + i],
+          ensdomains: data[fileCount * 3 + i]
         }
         allFiles.push(f)
         console.log(f)
@@ -127,12 +128,12 @@ export default function Files(props) {
     const cellValue = file[columnKey];
     switch (columnKey) {
       case "name":
-        return <a style={{cursor:"pointer"}}>{file.filename}</a>;
+        return <a style={{ cursor: "pointer" }}>{file.filename}</a>;
       //case "status":
       //  return <StyledBadge type={file.status}>{cellValue}</StyledBadge>;
       case "access":
         return <a>{file.ensdomains}</a>;
-  
+
       case "actions":
         return (
           <Row justify="center" align="center">
@@ -149,11 +150,11 @@ export default function Files(props) {
         return cellValue;
     }
   };
-  console.log(fileList) 
+  console.log(fileList)
   return (
 
     <div>
-      <div style={{ marginLeft: "200px", marginRight: "200px" }}>
+      <Container sm>
         <h1>Files</h1>
         <Table
           aria-label="Example table with custom cells"
@@ -161,8 +162,8 @@ export default function Files(props) {
             height: "auto"
           }}
           bordered
-      shadow={false}
-      striped
+          shadow={false}
+          striped
           selectionMode="none"
         >
           <Table.Header columns={columns}>
@@ -170,7 +171,7 @@ export default function Files(props) {
               <Table.Column
                 key={column.uid}
                 hideHeader={column.uid === "actions"}
-                align={ "start"}
+                align={"start"}
               >
                 {column.name}
               </Table.Column>
@@ -192,7 +193,7 @@ export default function Files(props) {
           </Button>
           <input type="file" name="file" ref={inputFile} onChange={selectFile} style={{ display: "none" }} />
         </Row>
-      </div>
+      </Container>
       <Modal
         closeButton
         aria-labelledby="modal-title"

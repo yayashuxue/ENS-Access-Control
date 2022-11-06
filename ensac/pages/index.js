@@ -25,10 +25,10 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {account.isConnected && isEns &&
-        <>
-          <Container sm><h1>Organizational Structrue Tree</h1></Container>
+        <div id="index-background">
+          <Container sm style={{ padding: "0" }}><h1 style={{ marginTop: "0" }}>Organizational Structrue Tree</h1></Container>
           <Diagram />
-        </>
+        </div>
       }
 
       {account.isConnected && !isEns &&
