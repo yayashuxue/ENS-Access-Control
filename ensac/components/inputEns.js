@@ -1,6 +1,6 @@
 import { Input  } from '@nextui-org/react';
 
-export default function App() {
+export default function InputEns() {
   return (
       <div
       style={{
