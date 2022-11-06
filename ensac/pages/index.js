@@ -26,7 +26,7 @@ export default function Home(props) {
       </Head>
       {account.isConnected && isEns &&
         <div id="index-background">
-          <Container sm style={{ padding: "0" }}><h1 style={{ marginTop: "0" }}>Organizational Structrue Tree</h1></Container>
+          <Container sm style={{ padding: "40px 0px 0px 0px" }}><h1 style={{ marginTop: "0", textAlign: "center" }}>Organizational Structure Tree</h1></Container>
           <Diagram />
         </div>
       }
