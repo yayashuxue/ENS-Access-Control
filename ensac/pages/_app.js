@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import Preloader from '../components/preloader';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const config = {
@@ -40,6 +42,10 @@ function MyApp({ Component, pageProps }) {
     sessionStorage.setItem("isEns", "false");
     setIsEns(false);
     disconnect();
+    toast("Log out success!");
+    if (router.pathname != "/") {
+      router.push("/")
+    }
   }
 
 
@@ -70,7 +76,7 @@ function MyApp({ Component, pageProps }) {
           <Logo />
         </Navbar.Brand>
         {account.isConnected && isEns ?
-          <Navbar.Content hideIn="xs">
+          <Navbar.Content hideIn="xs" css={{ marginLeft: "30px" }}>
             <Navbar.Link href="/" isActive={router.pathname == "/"}><AccountTreeIcon sx={{ mr: 1 }} /> Organization</Navbar.Link>
             <Navbar.Link href="/files" isActive={router.pathname == "/files"} ><InsertDriveFileIcon sx={{ mr: 1 }} /> Files</Navbar.Link>
           </Navbar.Content>
@@ -98,6 +104,7 @@ function MyApp({ Component, pageProps }) {
     </Layout>
     <Component {...pageProps} isEns={isEns} setIsEns={setIsEns} isLoading={isLoading} setIsLoading={setIsLoading} />
     <Web3Modal config={config} />
+    <ToastContainer />
   </>
 }
 
