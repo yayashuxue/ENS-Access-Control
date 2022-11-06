@@ -52,6 +52,36 @@ let data = [{
     parent: "Design.Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
+{
+    ens: "Harry.Product.Design.Flamingle.eth",
+    parent: "Product.Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Mars.Product.Design.Flamingle.eth",
+    parent: "Product.Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Liz.UI.Design.Flamingle.eth",
+    parent: "UI.Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Dish.R&D.Tech.Flamingle.eth",
+    parent: "R&D.Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Jack.R&D.Tech.Flamingle.eth",
+    parent: "R&D.Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Jason.R&D.Tech.Flamingle.eth",
+    parent: "R&D.Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
 ];
 let items = new DataManager(data, new Query().take(7));
 
@@ -107,7 +137,7 @@ function Diagram() {
         layout={{
             //Sets layout type
             type: 'OrganizationalChart',
-            orientation: "LeftToRight",
+            orientation: "TopToBottom",
             getLayoutInfo: (node, options) => {
                 if (!options.hasSubTree) {
                     options.type = 'Center';
