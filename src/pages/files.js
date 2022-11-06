@@ -77,7 +77,7 @@ export default function Files(props) {
   useState(()=>{
     const getData = async ()=>{
       setInterval(async()=>{
-        if(sessionStorage.getItem("isEns")){
+        if(typeof sessionStorage != undefined && sessionStorage.getItem("isEns")){
           await refetch();
         }
       }, 10000
@@ -92,7 +92,7 @@ export default function Files(props) {
     if(!isLoading && data && data.length){
       const fileCount = data.length / 4;
       const allFiles = [];
-      for (let i = 0; i < fileCount; i += 1) {
+      for (let i = 3; i < fileCount; i += 1) {
         const f = {
           filename: data[i],
           encryptedDescriptionString: data[fileCount + i],
@@ -173,7 +173,7 @@ export default function Files(props) {
 
   const handleClickFile = async (file) =>{
     //console.log("click", file.filename)
-    setDecryptVisible(true)
+    
     setDFilename(file.filename)
     setDEncryptedDescriptionString(file.encryptedDescriptionString);
     setDEncryptedSymmetricKey(file.encryptedSymmetricKey);
@@ -191,6 +191,7 @@ export default function Files(props) {
     ensDomainsAddresses.sort();
     console.log("ddd", ensDomainsAddresses)
     setDEnsdomains(ensDomainsAddresses)
+    setDecryptVisible(true)
   }
 
   const renderCell = (file, columnKey) => {

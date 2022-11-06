@@ -11,7 +11,7 @@ import { Container } from '@nextui-org/react';
 
 export default function Home(props) {
   const { account } = useAccount();
-  const { isEns, setIsEns } = props;
+  const { isEns, setIsEns, setNickName } = props;
 
   // useEffect(() => {
   //   console.log(sessionStorage.getItem("isEns"));
@@ -32,7 +32,7 @@ export default function Home(props) {
       }
 
       {account.isConnected && !isEns &&
-        <InputEns setIsEns={setIsEns} />
+        <InputEns setIsEns={setIsEns} setNickName={setNickName} />
       }
 
       {!account.isConnected &&

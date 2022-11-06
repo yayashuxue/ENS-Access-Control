@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@": "ensdomains/ensjs",
-    "ethers": "^5.7.2"
-  }
-}

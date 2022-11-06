@@ -6,8 +6,9 @@ import { findSubdomains } from '../utils/graph';
 import { useAccount } from '@web3modal/react';
 
 function InputEns(props) {
-  const { setIsEns } = props;
+  const { setIsEns, setNickName } = props;
   const [ens, setEns] = useState("");
+  
   const { account } = useAccount();
 
   const handleGo = async (event) => {
@@ -28,6 +29,7 @@ function InputEns(props) {
       return false;
     }
     if (parentdomain.resolvedAddress && parentdomain.resolvedAddress.id.toLowerCase() == account.address.toLowerCase()) {
+      //setNickName(parentdomain.name)
       return true;
     }
     if (!parentdomain.subdomains) {

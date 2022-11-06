@@ -35,6 +35,7 @@ function MyApp({ Component, pageProps }) {
   const { account } = useAccount();
   const [isEns, setIsEns] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [nickname, setNickName] = React.useState(null);
   const router = useRouter();
   const disconnect = useDisconnect();
 
@@ -98,7 +99,7 @@ function MyApp({ Component, pageProps }) {
             {account.isConnected ?
               <Popover>
                 <Popover.Trigger>
-                  <Button style={{ marginRight: "120px" }} size={"md"}>{account.address.slice(0, 10) + "..."}</Button>
+                  <Button style={{ marginRight: "120px" }} size={"md"}>{nickname?nickname:account.address.slice(0, 10) + "..."}</Button>
                 </Popover.Trigger>
                 <Popover.Content>
                   <Button onPress={disconnectWallet} auto color="error" size="md">Sign Out</Button>
