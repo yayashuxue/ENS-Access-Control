@@ -6,6 +6,7 @@ import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
+import { Input, Grid } from "@nextui-org/react";
 import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
 import pinFileToIPFS from '../utils/pinFileToIPFS';

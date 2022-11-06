@@ -3,43 +3,84 @@ import React from "react";
 import { Modal, Button, Text, Input, Row, Checkbox } from "@nextui-org/react";
 import { DiagramComponent, Inject, DataBinding, HierarchicalTree, SnapConstraints, DiagramConstraints } from "@syncfusion/ej2-react-diagrams";
 import { DataManager, Query } from '@syncfusion/ej2-data';
+import LanguageIcon from '@mui/icons-material/Language';
+import WalletIcon from '@mui/icons-material/Wallet';
 
 
 //Initializes data source
 let data = [{
     ens: "Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Tech.Flamingle.eth",
-    team: "Flamingle.eth"
+    parent: "Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Design.Flamingle.eth",
-    team: "Flamingle.eth"
+    parent: "Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "R&D.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth"
+    parent: "Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Test.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth"
+    parent: "Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "DS.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth"
+    parent: "Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "UI.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth"
+    parent: "Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "UX.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth"
+    parent: "Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Product.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth"
+    parent: "Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Harry.Product.Design.Flamingle.eth",
+    parent: "Product.Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Mars.Product.Design.Flamingle.eth",
+    parent: "Product.Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Liz.UI.Design.Flamingle.eth",
+    parent: "UI.Design.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Dish.R&D.Tech.Flamingle.eth",
+    parent: "R&D.Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Jack.R&D.Tech.Flamingle.eth",
+    parent: "R&D.Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
+},
+{
+    ens: "Jason.R&D.Tech.Flamingle.eth",
+    parent: "R&D.Tech.Flamingle.eth",
+    wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 ];
 let items = new DataManager(data, new Query().take(7));
@@ -57,14 +98,16 @@ function getPrefix(input) {
 
 function Diagram() {
     const [visible, setVisible] = React.useState(false);
-    const [team, setTeam] = React.useState("Default team");
+    const [parent, setParent] = React.useState("Default parent");
+    const [wallet, setWallet] = React.useState("Default wallet");
     const [ens, setEns] = React.useState("Default ENS");
     const [add, setAdd] = React.useState(false);
 
-    const handler = (id) => {
+    const handler = (data) => {
         setAdd(false);
-        setTeam(getPrefix(id));
-        setEns(id);
+        setParent(getPrefix(data.ens));
+        setWallet(data.wallet)
+        setEns(data.ens);
         setVisible(true);
     }
 
@@ -79,7 +122,7 @@ function Diagram() {
     function node(props) {
         console.log(props);
         return <div>
-            <Button bordered auto shadow onPress={() => { handler(props.data.ens) }} css={{ width: "150px", height: "50px" }}>
+            <Button bordered auto shadow onPress={() => { handler(props.data) }} css={{ width: "150px", height: "50px" }}>
                 {getPrefix(props.data.ens)}
             </Button>
         </div>
@@ -94,7 +137,7 @@ function Diagram() {
         layout={{
             //Sets layout type
             type: 'OrganizationalChart',
-            orientation: "LeftToRight",
+            orientation: "TopToBottom",
             getLayoutInfo: (node, options) => {
                 if (!options.hasSubTree) {
                     options.type = 'Center';
@@ -105,7 +148,7 @@ function Diagram() {
         //Configures data source for diagram
         dataSourceSettings={{
             id: 'ens',
-            parentId: 'team',
+            parentId: 'parent',
             dataManager: items
         }}
         //Sets the default properties for nodes and connectors
@@ -139,17 +182,28 @@ function Diagram() {
             aria-labelledby="modal-title"
             open={visible}
             onClose={closeHandler}
+            width="500px"
         >
             {add ? <>
                 <Modal.Header>
                     <Text id="modal-title" b size={18} >
-                        {team}
+                        {parent}
                     </Text>
                 </Modal.Header>
-                <Modal.Body>
-
+                <Modal.Body css={{ paddingTop: "25px" }}>
+                    <Input
+                        bordered
+                        labelPlaceholder="Node name"
+                        labelRight={`.${ens}`}
+                        color="primary"
+                        css={{ marginBottom: "30px" }}
+                    />
+                    <Input
+                        bordered
+                        labelPlaceholder="Wallet Address"
+                        color="primary" />
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer >
                     <Button auto onPress={closeHandler} css={{ width: "100%" }}>
                         Add
                     </Button>
@@ -157,13 +211,23 @@ function Diagram() {
             </> : <>
                 <Modal.Header>
                     <Text id="modal-title" b size={18} >
-                        {team}
+                        {parent}
                     </Text>
                 </Modal.Header>
                 <Modal.Body>
-                    <Text css={{ textAlign: "center" }}>
-                        ENS domain: {ens}
-                    </Text>
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <LanguageIcon />
+                        <Text css={{ textAlign: "left", margin: "0 0 0 10px", }}>
+                            {ens}
+                        </Text>
+                    </div>
+
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <WalletIcon />
+                        <Text css={{ textAlign: "left", margin: "0 0 0 10px", }}>
+                            {wallet}
+                        </Text>
+                    </div>
 
                 </Modal.Body>
                 <Modal.Footer>
