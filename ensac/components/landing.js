@@ -11,7 +11,7 @@ function LandingPage() {
                 }}
                 weight="bold"
             >
-                Org3 - Better organization management empowered by ENS access control
+                ORG3 - Better organization management empowered by ENS access control
             </Text>
             <Text
                 h2
