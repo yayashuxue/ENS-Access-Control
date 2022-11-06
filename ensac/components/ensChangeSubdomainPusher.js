@@ -4,7 +4,8 @@ import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
 import { Modal, Input, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
 import ensAbi from '../data/ensAbi.json';
-
+import { toast } from 'react-toastify';
+import { Loading } from "@nextui-org/react";
 
 const ENSChangeSubdomainPusher = (props) => {
   const addFileConfig = {
@@ -54,7 +55,7 @@ const ENSChangeSubdomainPusher = (props) => {
             </Text>
         </Modal.Header>
         <Modal.Body>
-          
+        <Loading></Loading>
         </Modal.Body>
         
       </Modal>

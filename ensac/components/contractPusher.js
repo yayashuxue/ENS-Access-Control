@@ -3,10 +3,11 @@ import org3Abi from '../data/org3Abi.json'
 import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
 import { Modal, Input, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
+import { Loading } from "@nextui-org/react";
 
 const ContractPusher = (props) => {
     const addFileConfig = {
-        address: '0xcc9A39284f5b0045B00731b474A9cA96f10dC707',
+        address: '0x5e378c084fcec1f30bf99f3ee5a406331b002060',
         abi: org3Abi,
         functionName: 'addFile',
         chainId: chains.mainnet.id,
@@ -22,9 +23,7 @@ const ContractPusher = (props) => {
             console.log(props)
             write();
             console.log(error)
-            if(error){
-              alert(error.message)
-            }
+            
         }
     }, [props.call])
 
@@ -42,7 +41,7 @@ const ContractPusher = (props) => {
             </Text>
         </Modal.Header>
         <Modal.Body>
-          
+          <Loading></Loading>
         </Modal.Body>
         
       </Modal>

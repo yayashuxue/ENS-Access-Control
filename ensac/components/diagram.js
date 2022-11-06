@@ -223,14 +223,14 @@ function Diagram() {
                 <Modal.Body>
                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                         <LanguageIcon />
-                        <Text css={{ textAlign: "left", margin: "0 0 0 10px", }}>
+                        <Text css={{ textAlign: "left", padding: "0 0 0 10px", }}>
                             {ens}
                         </Text>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                         <WalletIcon />
-                        <div style={{ width: "95%", overflow: "scroll" }}>
-                            <Text css={{ textAlign: "left", margin: "0 0 0 10px" }}>
+                        <div style={{ width: "95%", overflow: "hidden" }}>
+                            <Text css={{ textAlign: "left", padding: "0 0 0 10px" }}>
                                 {wallet}
                             </Text>
                         </div>

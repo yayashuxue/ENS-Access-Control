@@ -16,6 +16,8 @@ import { chains } from '@web3modal/ethereum';
 import { Container } from '@nextui-org/react';
 import DecryptFile from '../components/decryptFile';
 import { findSubdomains } from '../utils/graph';
+import { toast } from 'react-toastify';
+
 
 export default function Files(props) {
   const [file, setFile] = useState();
@@ -37,7 +39,9 @@ export default function Files(props) {
   const [pens, setPEns] = useState("");
   useEffect(()=>{
     if(typeof sessionStorage != undefined && sessionStorage.getItem("isEns") && sessionStorage.getItem("isEns") != 'false'){
-      setPEns(sessionStorage.getItem("isEns"))
+      if(sessionStorage.getItem("isEns")){
+        setPEns(sessionStorage.getItem("isEns"))
+      }
       //console.log("enss",sessionStorage.getItem("isEns"))
     }
   }
@@ -61,7 +65,7 @@ export default function Files(props) {
   };
 
   const config = {
-    address: '0xcc9A39284f5b0045B00731b474A9cA96f10dC707',
+    address: '0x5e378c084fcec1f30bf99f3ee5a406331b002060',
     abi: org3Abi,
     functionName: 'getAllData',
     chainId: chains.mainnet.id,
@@ -72,13 +76,11 @@ export default function Files(props) {
 
   useState(()=>{
     const getData = async ()=>{
-      //console.log("fetch")
       setInterval(async()=>{
-        //console.log(decryptVisible)
-        if(!decryptVisible){
+        if(sessionStorage.getItem("isEns")){
           await refetch();
         }
-      }, 20000
+      }, 10000
       )
     }
 
@@ -86,8 +88,8 @@ export default function Files(props) {
   }, [refetch])
 
   useEffect(()=>{
-    console.log(data)
-    if(!isLoading && data){
+    //console\.log\("ddd",data)
+    if(!isLoading && data && data.length){
       const fileCount = data.length / 4;
       const allFiles = [];
       for (let i = 0; i < fileCount; i += 1) {
@@ -98,18 +100,48 @@ export default function Files(props) {
           ensdomains: data[fileCount * 3 + i]
         }
         allFiles.push(f)
-        //console.log(f)
       }
-      setFileList(allFiles);
+      if(allFiles.length > 0){
+        setFileList(allFiles);
+      }
     }
   }, [!isLoading])
+
 
   const selectFile = async (e) => {
     setFile(e.target.files[0]);
     setVisible(true);
     setFilename(e.target.files[0].name)
+    setLoading(false);
+    setEnsdomains("")
   }
+
+  const getAllAddresses = (subd) =>{
+    const res = [];
+    addAddresses(subd, res);
+    res.sort();
+    //console\.log\("ddd", res)
+    return res
+  }
+
+  const addAddresses = (subd, res) => {
+    //console\.log\("ddd", subd)
+    if(subd.resolvedAddress){
+      res.push(subd.resolvedAddress.id);
+    }
+    if(subd.subdomains){
+      for(let i = 0; i < subd.subdomains.length; i++){
+        addAddresses(subd.subdomains[i], res)
+      }
+    }
+  }
+
   const uploadFile = async () => {
+    //console\.log\("ddd", ensdomains)
+    if(!filename || !ensdomains){
+      toast.error("Input fields cannot be empty")
+      return
+    }
     setLoading("Uploading to IPFS");
     const IpfsHash = await pinFileToIPFS(file);
     setHash(IpfsHash);
@@ -119,13 +151,16 @@ export default function Files(props) {
     });
     let ensDomainsAddresses = [];
     for(let i = 0; i < ensdomainsT.length; i++){
-      const subd =  await findSubdomains();
-      ensDomainsAddresses += subd;
-      console.log("ddd", subd)
+      const subd =  await findSubdomains(ensdomainsT[i]);
+      //console\.log\("ddd", subd)
+      if(subd.data.domains.length){
+        ensDomainsAddresses = ensDomainsAddresses.concat(getAllAddresses(subd.data.domains[0]))
+      }
     }
-    console.log("ddd", ensDomainsAddresses)
+    ensDomainsAddresses.sort();
+    //console\.log\("ddd", ensDomainsAddresses)
 
-    const { encryptedString, encryptedSymmetricKey } = await Encrypt.encryptHash(IpfsHash, ensdomainsT)
+    const { encryptedString, encryptedSymmetricKey } = await Encrypt.encryptHash(IpfsHash, ensDomainsAddresses)
     const encryptedDescriptionString = await blobToBase64(encryptedString);
 
     setEnsdomains(ensdomainsT.join("/"))
@@ -136,13 +171,26 @@ export default function Files(props) {
     setLoading(false);
   }
 
-  const handleClickFile = (file) =>{
+  const handleClickFile = async (file) =>{
     //console.log("click", file.filename)
     setDecryptVisible(true)
     setDFilename(file.filename)
     setDEncryptedDescriptionString(file.encryptedDescriptionString);
     setDEncryptedSymmetricKey(file.encryptedSymmetricKey);
-    setDEnsdomains([file.ensdomains])
+    const ensdomainsT = file.ensdomains.split("/").map(element => {
+      return element.trim();
+    });
+    let ensDomainsAddresses = [];
+    for(let i = 0; i < ensdomainsT.length; i++){
+      const subd = await findSubdomains(ensdomainsT[i]);
+      //console\.log\("ddd", subd)
+      if(subd.data.domains.length){
+        ensDomainsAddresses = ensDomainsAddresses.concat(getAllAddresses(subd.data.domains[0]))
+      }
+    }
+    ensDomainsAddresses.sort();
+    console.log("ddd", ensDomainsAddresses)
+    setDEnsdomains(ensDomainsAddresses)
   }
 
   const renderCell = (file, columnKey) => {
@@ -154,7 +202,7 @@ export default function Files(props) {
       //case "status":
       //  return <StyledBadge type={file.status}>{cellValue}</StyledBadge>;
       case "access":
-        return <a>{file.ensdomains}</a>;
+        return <a>{file.ensdomains.split("/").join(", ")}</a>;
 
       case "actions":
         return (
