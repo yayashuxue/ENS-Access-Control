@@ -14,7 +14,9 @@ export const findSubdomains = async (ensName) => {
     `
     {
         domains (where: {name:"${ensName}"}){
-            id
+            owner{
+                id
+            }
             name
             subdomains{
                 owner{
@@ -38,6 +40,26 @@ export const findSubdomains = async (ensName) => {
   }    `
     const data = await GraphClient
     .query({
+        query: gql(query),
+    })
+
+    return data;
+}
+
+export const findAddress = async (ensName) => {
+    const query = 
+    `
+    {
+        domains (where: {name:"${ensName}"}){
+            owner{
+                id
+            }
+            name
+        }
+    }
+    `
+    console.log(query)
+    const data = await GraphClient.query({
         query: gql(query),
     })
 

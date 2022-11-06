@@ -5,7 +5,7 @@ import { DiagramComponent, Inject, DataBinding, HierarchicalTree, SnapConstraint
 import { DataManager, Query } from '@syncfusion/ej2-data';
 import LanguageIcon from '@mui/icons-material/Language';
 import WalletIcon from '@mui/icons-material/Wallet';
-import { findSubdomains } from "../utils/graph";
+import { findSubdomains, findAddress} from "../utils/graph";
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { namehash } from '@ensdomains/ensjs/utils/normalise'
 import { chains } from '@web3modal/ethereum'
@@ -20,7 +20,7 @@ const getSubdomainData = async (domainName) => {
     console.log(data.data);
     new_data = []
 
-    new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].id })
+    new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].owner.id })
 
     buildUpArray(data.data.domains[0])
     console.log(new_data)
@@ -89,8 +89,9 @@ function Diagram() {
         setNodeName(event.target.value);
     }
 
-    function handleWalletAddress(event) {
-        setWalletAddress(event.target.value)
+    async function handleWalletAddress(event) {
+            setWalletAddress(event.target.value)
+        
     }
 
     const addHandler = () => {
@@ -101,8 +102,17 @@ function Diagram() {
         setVisible(false);
     };
 
-    const addToENSHandler = () => {
+    async function translate(name){
+        if(name.endsWith(".eth")){
+            let address = await findAddress(name);
+            console.log(address.data.domains[0].owner.id);
+            setWalletAddress(address.data.domains[0].owner.id)
+        } 
+    }
+
+    const addToENSHandler = async () => {
         console.log("cakked");
+        await translate(walletAddress);
         setCall(call + 1);
         // args: [namehash('julieshi.eth'), keccak256(toUtf8Bytes(nodeName)), walletAddress, "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41", "0000000000000000000000000000000000000000000000000000000000000000"]
 
@@ -195,7 +205,7 @@ function Diagram() {
                     />
                     <Input
                         bordered
-                        labelPlaceholder="Wallet Address"
+                        labelPlaceholder="Wallet Address/ENS"
                         value={walletAddress}
                         onChange={handleWalletAddress}
                         color="primary" />
