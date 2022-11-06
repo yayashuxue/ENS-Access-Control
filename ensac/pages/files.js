@@ -15,6 +15,7 @@ import org3Abi from '../data/org3Abi.json'
 import { chains } from '@web3modal/ethereum';
 import { Container } from '@nextui-org/react';
 import DecryptFile from '../components/decryptFile';
+import { findSubdomains } from '../utils/graph';
 
 export default function Files(props) {
   const [file, setFile] = useState();
@@ -33,6 +34,14 @@ export default function Files(props) {
   const [call, setCall] = useState(0)
   const [fileList, setFileList] = useState([])
   const inputFile = useRef(null)
+  const [pens, setPEns] = useState("");
+  useEffect(()=>{
+    if(typeof sessionStorage != undefined && sessionStorage.getItem("isEns") && sessionStorage.getItem("isEns") != 'false'){
+      setPEns(sessionStorage.getItem("isEns"))
+      //console.log("enss",sessionStorage.getItem("isEns"))
+    }
+  }
+  , [typeof sessionStorage != undefined])
 
   const columns = [
     { name: "FILE NAME", uid: "name" },
@@ -56,8 +65,9 @@ export default function Files(props) {
     abi: org3Abi,
     functionName: 'getAllData',
     chainId: chains.mainnet.id,
-    args: ["flamingle.eth"]
+    args: [pens]
   }
+  //console.log("enss", pens)
   const { data, error, isLoading, refetch } = useContractRead(config)
 
   useState(()=>{
@@ -76,7 +86,7 @@ export default function Files(props) {
   }, [refetch])
 
   useEffect(()=>{
-    //console.log(data)
+    console.log(data)
     if(!isLoading && data){
       const fileCount = data.length / 4;
       const allFiles = [];
@@ -104,13 +114,21 @@ export default function Files(props) {
     const IpfsHash = await pinFileToIPFS(file);
     setHash(IpfsHash);
     setLoading("Encrypting");
-    const ensdomains = ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]; // TODO
-    const { encryptedString, encryptedSymmetricKey } = await Encrypt.encryptHash(IpfsHash, ensdomains)
+    const ensdomainsT = ensdomains.split(",").map(element => {
+      return element.trim();
+    });
+    let ensDomainsAddresses = [];
+    for(let i = 0; i < ensdomainsT.length; i++){
+      const subd =  await findSubdomains();
+      ensDomainsAddresses += subd;
+      console.log("ddd", subd)
+    }
+    console.log("ddd", ensDomainsAddresses)
+
+    const { encryptedString, encryptedSymmetricKey } = await Encrypt.encryptHash(IpfsHash, ensdomainsT)
     const encryptedDescriptionString = await blobToBase64(encryptedString);
 
-    const filename = file.name;
-    setEnsdomains(ensdomains.join("/"))
-    setFilename(filename)
+    setEnsdomains(ensdomainsT.join("/"))
     setEncryptedDescriptionString(encryptedDescriptionString)
     setEncryptedSymmetricKey(encryptedSymmetricKey)
     setVisible(false);
@@ -220,14 +238,18 @@ export default function Files(props) {
             onChange={(e)=>{setFilename(e.target.value)}}
             color="primary"
             size="lg"
-            value={filename&&file? filename : ""}
+            value={filename}
           />
           <Text size={16}>
             Who can access?
+            <br></br>
+            <span style={{fontSize:"10px"}}>
+            Input ENS domains to grant access to groups or individuals
+            </span>
           </Text>
           <Input
             readOnly={loading}
-            placeholder={"tech.flamingle.eth"}
+            placeholder={`tech.${pens}, vitalik.${pens}`}
             clearable
             bordered
             fullWidth
@@ -246,7 +268,7 @@ export default function Files(props) {
           </Button>
         </Modal.Footer>
       </Modal>
-      <ContractPusher call={call} primaryDomain={"flamingle.eth"} filename={filename} encryptedDescriptionString={encryptedDescriptionString} encryptedSymmetricKey={encryptedSymmetricKey} ensdomains={ensdomains}></ContractPusher>
+      <ContractPusher call={call} primaryDomain={pens} filename={filename} encryptedDescriptionString={encryptedDescriptionString} encryptedSymmetricKey={encryptedSymmetricKey} ensdomains={ensdomains}></ContractPusher>
       <DecryptFile visible={decryptVisible} setVisible={setDecryptVisible} filename={dfilename} encryptedString={dencryptedDescriptionString} encryptedSymmetricKey={dencryptedSymmetricKey} ensdomains={densdomains}></DecryptFile>
     </div>
 
