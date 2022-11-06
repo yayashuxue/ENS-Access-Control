@@ -47,10 +47,11 @@ function DecryptFile(props) {
             {
                 loading?
                 
-                <h1>Decrypting...</h1>:
+                <Button disabled>Decrypting...</Button>:
                 decryptedHash?
                 <Button onClick={()=>{window.open("https://flamingle.mypinata.cloud/ipfs/"+decryptedHash)}}>View File</Button>:
-                <h1>No Access</h1>
+                <Button disabled>No Access</Button>
+                
             }
 
         </Modal.Body>

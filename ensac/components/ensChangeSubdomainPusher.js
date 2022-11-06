@@ -6,6 +6,7 @@ import { Modal, Input, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/
 import ensAbi from '../data/ensAbi.json';
 import ensResolverAbi from '../data/ensResolverAbi.json';
 import toast from 'react-toastify';
+import { Loading } from "@nextui-org/react";
 
 const ENSChangeSubdomainPusher = (props) => {
   const addFileConfig = {
@@ -123,7 +124,7 @@ const ENSChangeResolvedAddress = (props) => {
             </Text>
         </Modal.Header>
         <Modal.Body>
-          
+        <Loading></Loading>
         </Modal.Body>
         
       </Modal>
