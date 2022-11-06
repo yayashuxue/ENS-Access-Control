@@ -5,6 +5,7 @@ function InputEns(props) {
   const { setIsEns } = props;
 
   function handleGo() {
+    sessionStorage.setItem('isEns', 'true');
     setIsEns(true);
   }
 

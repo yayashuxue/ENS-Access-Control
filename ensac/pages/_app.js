@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import React from "react";
+import React, { useEffect } from "react";
 import { registerLicense } from '@syncfusion/ej2-base';
 import { Navbar, Button, Link, Text, Card, Radio } from "@nextui-org/react";
 import { Layout } from "./Layout.js";
@@ -27,6 +27,16 @@ function MyApp({ Component, pageProps }) {
   const variants = ["static", "floating", "sticky"];
   const { account } = useAccount();
   const [isEns, setIsEns] = React.useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("isEns") == null || sessionStorage.getItem("isEns") == 'false') {
+      setIsEns(false);
+    }
+
+    if (sessionStorage.getItem("isEns") == 'true') {
+      setIsEns(true);
+    }
+  }, [])
 
   return <>
     <Head>

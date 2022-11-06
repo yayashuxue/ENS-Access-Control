@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Diagram from '../components/diagram'
-import React from "react";
+import React, { useState } from "react";
 import { findSubdomains } from "../utils/graph"
 import { useAccount } from '@web3modal/react';
 import LandingPage from '../components/landing';
@@ -11,10 +11,6 @@ import { useEffect } from 'react';
 export default function Home(props) {
   const { account } = useAccount();
   const { isEns, setIsEns } = props;
-
-  useEffect(() => {
-    console.log(account);
-  }, [])
 
   return (
     <div className={styles.container}>
@@ -31,7 +27,7 @@ export default function Home(props) {
       }
 
       {account.isConnected && !isEns &&
-        <InputEns isEns={isEns} setIsEns={setIsEns} />
+        <InputEns setIsEns={setIsEns} />
       }
 
       {!account.isConnected && !isEns &&
