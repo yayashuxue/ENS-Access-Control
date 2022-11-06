@@ -12,44 +12,10 @@ import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction, Web3Modal } from '@web3modal/react'
 import ENSChangeSubdomainPusher from './ensChangeSubdomainPusher'
 import { Web3Button, useAccount } from '@web3modal/react';
+import {toast} from "react-toastify";
 
 
-let new_data = new Set()
-let root_address = "";
-const getSubdomainData = async (domainName) => {
 
-    let data = await findSubdomains(domainName)
-    console.log(data.data);
-    new_data = []
-
-    new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].resolvedAddress ? data.data.domains[0].resolvedAddress.id : "Unassigned" })
-    root_address = new_data[0].wallet;
-    buildUpArray(data.data.domains[0])
-    console.log(new_data)
-    console.log(new_data.length)
-
-    return;
-}
-
-const buildUpArray = (parent_domains) => {
-    if (!parent_domains.subdomains) {
-        return;
-    }
-    for (let i = 0; i < parent_domains.subdomains.length; ++i) {
-        new_data.push({ ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].resolvedAddress ? parent_domains.subdomains[i].resolvedAddress.id : "Unassigned", parent: parent_domains.name })
-        buildUpArray(parent_domains.subdomains[i])
-    }
-}
-
-function getPrefix(input) {
-    let output = "";
-    for (let i = 0; i < input.length; i++) {
-        if (input[i] == ".") break;
-        output += input[i];
-    }
-
-    return output;
-}
 
 function Diagram() {
     const [visible, setVisible] = React.useState(false);
@@ -58,22 +24,67 @@ function Diagram() {
     const [ens, setEns] = React.useState("");
     const [add, setAdd] = React.useState(false);
     const [items, setItems] = React.useState(null);
-    const [disableAdd, setDisableAdd] = React.useState(true);
+    const [disableAdd, setDisableAdd] = React.useState(false);
     // const [parentName, setParentName] = React.useState("")
     const [nodeName, setNodeName] = React.useState("");
     const [walletAddress, setWalletAddress] = React.useState("");
     const [call, setCall] = React.useState(0)
     const { account } = useAccount();
 
+    let new_data = new Set()
+    let root_address = "";
 
-    useEffect(() => {
-        // Event.preventDefault();
+    const getSubdomainData = async (domainName) => {
+
+        let data = await findSubdomains(domainName)
+        
+        console.log(data.data);
+        new_data = []
+    
+        new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].resolvedAddress ? data.data.domains[0].resolvedAddress.id : "Unassigned" })
+        root_address = new_data[0].wallet;
+        buildUpArray(data.data.domains[0])
+        console.log(new_data)
+        console.log(new_data.length)
+
+        //problem here ?????
         if (root_address.toLowerCase() == account.address.toLowerCase()) {
             setDisableAdd(false);
         } else {
             setDisableAdd(true);
         }
+        
+
+        return;
+    }
+    
+    const buildUpArray = (parent_domains) => {
+        if (!parent_domains.subdomains) {
+            return;
+        }
+        for (let i = 0; i < parent_domains.subdomains.length; ++i) {
+            new_data.push({ ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].resolvedAddress ? parent_domains.subdomains[i].resolvedAddress.id : "Unassigned", parent: parent_domains.name })
+            buildUpArray(parent_domains.subdomains[i])
+        }
+    }
+    
+    function getPrefix(input) {
+        let output = "";
+        for (let i = 0; i < input.length; i++) {
+            if (input[i] == ".") break;
+            output += input[i];
+        }
+    
+        return output;
+    }
+    
+
+
+    useEffect(() => {
+        // Event.preventDefault();
+        
         const call = async () => {
+            
             let ens = sessionStorage.getItem("isEns");
             if (ens != "" && ens != "false") {
                 await getSubdomainData(ens);
@@ -105,7 +116,12 @@ function Diagram() {
     }
 
     const addHandler = () => {
-        setAdd(true);
+        if(!disableAdd) {
+            setAdd(true);
+        } else {
+            toast.error("Your access level is not enough to peform this action!")
+        }
+        
     }
 
     const closeHandler = () => {
@@ -115,8 +131,8 @@ function Diagram() {
     async function translate(name) {
         if (name.endsWith(".eth")) {
             let address = await findAddress(name);
-            console.log(address.data.domains[0].owner.id);
-            setWalletAddress(address.data.domains[0].owner.id)
+            console.log(address.data.domains[0].resolvedAddress.id);
+            setWalletAddress(address.data.domains[0].resolvedAddress.id)
         }
     }
 
@@ -247,7 +263,7 @@ function Diagram() {
 
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button auto onPress={addHandler} css={{ width: "100%" }} disabled={disableAdd}>
+                    <Button auto onPress={addHandler} css={{ width: "100%" }}>
                         Add Under This Node
                     </Button>
                 </Modal.Footer>
