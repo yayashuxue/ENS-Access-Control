@@ -14,42 +14,42 @@ let data = [{
 },
 {
     ens: "Tech.Flamingle.eth",
-    team: "Flamingle.eth",
+    parent: "Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Design.Flamingle.eth",
-    team: "Flamingle.eth",
+    parent: "Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "R&D.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth",
+    parent: "Tech.Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Test.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth",
+    parent: "Tech.Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "DS.Tech.Flamingle.eth",
-    team: "Tech.Flamingle.eth",
+    parent: "Tech.Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "UI.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth",
+    parent: "Design.Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "UX.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth",
+    parent: "Design.Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 {
     ens: "Product.Design.Flamingle.eth",
-    team: "Design.Flamingle.eth",
+    parent: "Design.Flamingle.eth",
     wallet: "0xADa31620FA61097CC3dCCaF40215ad74d124aF48"
 },
 ];
@@ -68,14 +68,14 @@ function getPrefix(input) {
 
 function Diagram() {
     const [visible, setVisible] = React.useState(false);
-    const [team, setTeam] = React.useState("Default team");
+    const [parent, setParent] = React.useState("Default parent");
     const [wallet, setWallet] = React.useState("Default wallet");
     const [ens, setEns] = React.useState("Default ENS");
     const [add, setAdd] = React.useState(false);
 
     const handler = (data) => {
         setAdd(false);
-        setTeam(getPrefix(data.ens));
+        setParent(getPrefix(data.ens));
         setWallet(data.wallet)
         setEns(data.ens);
         setVisible(true);
@@ -118,7 +118,7 @@ function Diagram() {
         //Configures data source for diagram
         dataSourceSettings={{
             id: 'ens',
-            parentId: 'team',
+            parentId: 'parent',
             dataManager: items
         }}
         //Sets the default properties for nodes and connectors
@@ -157,7 +157,7 @@ function Diagram() {
             {add ? <>
                 <Modal.Header>
                     <Text id="modal-title" b size={18} >
-                        {team}
+                        {parent}
                     </Text>
                 </Modal.Header>
                 <Modal.Body css={{ paddingTop: "25px" }}>
@@ -181,7 +181,7 @@ function Diagram() {
             </> : <>
                 <Modal.Header>
                     <Text id="modal-title" b size={18} >
-                        {team}
+                        {parent}
                     </Text>
                 </Modal.Header>
                 <Modal.Body>
