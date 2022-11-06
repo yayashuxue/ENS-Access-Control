@@ -24,17 +24,17 @@ function InputEns(props) {
   }
 
   const checkIfUnderDomain = (parentdomain) => {
-    if(!parentdomain){
+    if (!parentdomain) {
       return false;
     }
-    if(parentdomain.resolvedAddress && parentdomain.resolvedAddress.id.toLowerCase() == account.address.toLowerCase()){
+    if (parentdomain.resolvedAddress && parentdomain.resolvedAddress.id.toLowerCase() == account.address.toLowerCase()) {
       return true;
     }
-    if(!parentdomain.subdomains){
+    if (!parentdomain.subdomains) {
       return false;
     }
-    for(let i = 0; i < parentdomain.subdomains.length; ++i){
-      if(checkIfUnderDomain(parentdomain.subdomains[i])){
+    for (let i = 0; i < parentdomain.subdomains.length; ++i) {
+      if (checkIfUnderDomain(parentdomain.subdomains[i])) {
         return true;
       }
     }
