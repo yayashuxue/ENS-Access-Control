@@ -10,7 +10,6 @@ import {findSubdomains} from "../utils/graph";
 let new_data = new Set()
 const getSubdomainData = async (domainName) => {
 
-
     let data = await findSubdomains(domainName)
     new_data = []
 
@@ -97,7 +96,7 @@ function Diagram() {
         layout={{
             //Sets layout type
             type: 'OrganizationalChart',
-            orientation: "LeftToRight",
+            orientation: "TopToBottom",
             getLayoutInfo: (node, options) => {
                 if (!options.hasSubTree) {
                     options.type = 'Center';
