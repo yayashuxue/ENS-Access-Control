@@ -1,27 +1,37 @@
 import { Input } from '@nextui-org/react';
 import { Button } from '@nextui-org/react';
+import { useState } from 'react';
 
 function InputEns(props) {
   const { setIsEns } = props;
+  const [ens, setEns] = useState("");
 
   function handleGo() {
-    sessionStorage.setItem('isEns', 'true');
+    sessionStorage.setItem('isEns', ens);
     setIsEns(true);
   }
 
+  function handleEnsChange(event) {
+    setEns(event.target.value);
+  }
+
   return (
-    <div
+    <form
+      onSubmit={handleGo}
       style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "90vh"
+        height: "70vh",
+        flexGrow: 0
       }}>
-      <Input label="ENS address" placeholder="tech.flamingo.eth" />
-      <Button onClick={handleGo}>
+
+      <Input labelPlaceholder="Organization's ENS address" css={{ width: "300px" }} value={ens} onChange={handleEnsChange} />
+      <Button type="submit" css={{ marginLeft: "10px" }}>
         Go
       </Button>
-    </div>
+
+    </form>
   )
 }
 

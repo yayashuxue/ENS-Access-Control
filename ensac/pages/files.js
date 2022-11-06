@@ -13,7 +13,6 @@ import { useContractRead } from '@web3modal/react'
 import ContractPusher from '../components/contractPusher';
 import org3Abi from '../data/org3Abi.json'
 import { chains } from '@web3modal/ethereum'
-import { useEffect } from 'react';
 
 export default function Files(props) {
   const [file, setFile] = useState();
@@ -30,12 +29,11 @@ export default function Files(props) {
 
   const columns = [
     { name: "FILE NAME", uid: "name" },
-    { name: "OWNER", uid: "role" },
-    { name: "STATUS", uid: "status" },
+    { name: "ACCESS", uid: "access" },
     { name: "ACTIONS", uid: "actions" },
   ];
   const file_svg = "https://upload.wikimedia.org/wikipedia/commons/0/0c/File_alt_font_awesome.svg"
-  
+
   const blobToBase64 = blob => {
     const reader = new FileReader();
     reader.readAsDataURL(blob);
@@ -57,24 +55,31 @@ export default function Files(props) {
 
   useState(()=>{
     const getData = async ()=>{
-      await refetch();
+      console.log("fetch")
+      setInterval(async()=>{
+        await refetch();
+        console.log(fileList)
+      }, 10000
+      )
     }
 
     getData()
   }, [refetch])
 
   useEffect(()=>{
-    if(!isLoading){
+    console.log(data)
+    if(!isLoading && data){
       const fileCount = data.length / 4;
       const allFiles = [];
-      for(let i = 0; i < fileCount; i+=1){
+      for (let i = 0; i < fileCount; i += 1) {
         const f = {
           filename: data[i],
           encryptedDescriptionString: data[fileCount+i],
           encryptedSymmetricKey: data[fileCount*2+i],
-          ensdomains: data[fileCount*3+1]
+          ensdomains: data[fileCount*3+i]
         }
         allFiles.push(f)
+        console.log(f)
       }
       setFileList(allFiles);
     }
@@ -99,7 +104,7 @@ export default function Files(props) {
     setEncryptedDescriptionString(encryptedDescriptionString)
     setEncryptedSymmetricKey(encryptedSymmetricKey)
     setVisible(false);
-    setCall(call+1);
+    setCall(call + 1);
     setLoading(false);
   }
 
@@ -122,19 +127,17 @@ export default function Files(props) {
     const cellValue = file[columnKey];
     switch (columnKey) {
       case "name":
-        return (
-          <file squared src={file.avatar} name={file.filename} css={{ p: 0 }}>
-
-          </file>
-        );
-      case "status":
-        return <StyledBadge type={file.status}>{cellValue}</StyledBadge>;
-
+        return <a style={{cursor:"pointer"}}>{file.filename}</a>;
+      //case "status":
+      //  return <StyledBadge type={file.status}>{cellValue}</StyledBadge>;
+      case "access":
+        return <a>{file.ensdomains}</a>;
+  
       case "actions":
         return (
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
-              <Tooltip content="Details">
+              <Tooltip content="View File">
                 <IconButton onClick={() => console.log("View file", file.id)}>
                   <EyeIcon size={20} fill="#979797" />
                 </IconButton>
@@ -146,16 +149,20 @@ export default function Files(props) {
         return cellValue;
     }
   };
+  console.log(fileList) 
   return (
 
     <div>
-      <div style={{ marginLeft: "80px", marginRight: "80px" }}>
+      <div style={{ marginLeft: "200px", marginRight: "200px" }}>
         <h1>Files</h1>
         <Table
           aria-label="Example table with custom cells"
           css={{
             height: "auto"
           }}
+          bordered
+      shadow={false}
+      striped
           selectionMode="none"
         >
           <Table.Header columns={columns}>
@@ -163,7 +170,7 @@ export default function Files(props) {
               <Table.Column
                 key={column.uid}
                 hideHeader={column.uid === "actions"}
-                align={column.uid === "actions" ? "center" : "start"}
+                align={ "start"}
               >
                 {column.name}
               </Table.Column>
@@ -171,9 +178,9 @@ export default function Files(props) {
           </Table.Header>
           <Table.Body items={fileList}>
             {(item) => (
-              <Table.Row>
+              <Table.Row key={item.filename}>
                 {(columnKey) => (
-                  <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
+                  <Table.Cell key={item.filename}>{renderCell(item, columnKey)}</Table.Cell>
                 )}
               </Table.Row>
             )}
@@ -181,7 +188,7 @@ export default function Files(props) {
         </Table>
         <Row style={{ marginTop: "20px" }} justify="end" align="center">
           <Button onClick={() => inputFile.current.click()}>
-            Upload File Securely
+            + Upload File Securely
           </Button>
           <input type="file" name="file" ref={inputFile} onChange={selectFile} style={{ display: "none" }} />
         </Row>
