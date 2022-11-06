@@ -10,9 +10,10 @@ import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { namehash } from '@ensdomains/ensjs/utils/normalise'
 import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction, Web3Modal } from '@web3modal/react'
-import ENSChangeSubdomainPusher from './ensChangeSubdomainPusher'
+import {ENSChangeSubdomainPusher, ENSChangeResolvedAddress} from './ensChangeSubdomainPusher'
 import { Web3Button, useAccount } from '@web3modal/react';
 import {toast} from "react-toastify";
+import { ContractMethodNoResultError } from "@wagmi/core";
 
 
 
@@ -29,6 +30,7 @@ function Diagram() {
     const [nodeName, setNodeName] = React.useState("");
     const [walletAddress, setWalletAddress] = React.useState("");
     const [call, setCall] = React.useState(0)
+    const [call2, setCall2] = React.useState(0)
     const { account } = useAccount();
 
     let new_data = new Set()
@@ -44,15 +46,11 @@ function Diagram() {
         new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].resolvedAddress ? data.data.domains[0].resolvedAddress.id : "Unassigned" })
         root_address = new_data[0].wallet;
         buildUpArray(data.data.domains[0])
-        console.log(new_data)
-        console.log(new_data.length)
+        // console.log(root_address.toLowerCase())
+        // console.log("=========")
+        console.log(account)
 
         //problem here ?????
-        if (root_address.toLowerCase() == account.address.toLowerCase()) {
-            setDisableAdd(false);
-        } else {
-            setDisableAdd(true);
-        }
         
 
         return;
@@ -112,16 +110,10 @@ function Diagram() {
 
     async function handleWalletAddress(event) {
         setWalletAddress(event.target.value)
-
     }
 
     const addHandler = () => {
-        if(!disableAdd) {
-            setAdd(true);
-        } else {
-            toast.error("Your access level is not enough to peform this action!")
-        }
-        
+        setAdd(true);
     }
 
     const closeHandler = () => {
@@ -154,7 +146,9 @@ function Diagram() {
 
 
 
-    return <DiagramComponent id="container" width={'100%'} height={'530px'} constraints={DiagramConstraints.Default & ~DiagramConstraints.PageEditable} snapSettings={{
+    return (<>
+    {/* <h1>{account.address}</h1> */}
+    <DiagramComponent id="container" width={'100%'} height={'530px'} constraints={DiagramConstraints.Default & ~DiagramConstraints.PageEditable} snapSettings={{
         constraints: SnapConstraints.None
     }}
         nodeTemplate={node}
@@ -270,8 +264,9 @@ function Diagram() {
             </>}
 
         </Modal>
-        <ENSChangeSubdomainPusher call={call} domainName={namehash(ens)} subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={account.address} resolver={walletAddress} ttl={0}></ENSChangeSubdomainPusher>
-    </DiagramComponent>;
+        <ENSChangeSubdomainPusher call2={call2} setCall2={setCall2} call={call} domainName={namehash(ens)}  subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={account.address} resolver={"0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41"}  domainName={namehash(nodeName + "." + ens)}  resolvedAddress={walletAddress} ttl={0}></ENSChangeSubdomainPusher>
+        <ENSChangeResolvedAddress call={call2} domainName={namehash(nodeName + "." + ens)}  resolvedAddress={walletAddress} ></ENSChangeResolvedAddress>
+    </DiagramComponent></>);
 }
 
 export default Diagram;
