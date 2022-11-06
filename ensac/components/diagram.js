@@ -264,7 +264,7 @@ function Diagram() {
             </>}
 
         </Modal>
-        <ENSChangeSubdomainPusher call2={call2} setCall2={setCall2} call={call} domainName={namehash(ens)}  subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={account.address} resolver={"0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41"}  domainName={namehash(nodeName + "." + ens)}  resolvedAddress={walletAddress} ttl={0}></ENSChangeSubdomainPusher>
+        <ENSChangeSubdomainPusher call2={call2} setCall2={setCall2} call={call} domainName={namehash(ens)}  subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={account.address} resolver={"0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41"}  domainName={namehash(nodeName + "." + ens)}  resolvedAddress={walletAddress}  ttl={0}></ENSChangeSubdomainPusher>
         <ENSChangeResolvedAddress call={call2} domainName={namehash(nodeName + "." + ens)}  resolvedAddress={walletAddress} ></ENSChangeResolvedAddress>
     </DiagramComponent></>);
 }
