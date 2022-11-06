@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }) {
   const [variant, setVariant] = React.useState("static");
   const variants = ["static", "floating", "sticky"];
   const { account } = useAccount();
-  account.isEns = false;
+  const [isEns, setIsEns] = React.useState(false);
 
   return <>
     <Head>
@@ -63,7 +63,7 @@ function MyApp({ Component, pageProps }) {
         </Navbar.Content>
       </Navbar>
     </Layout>
-    <Component {...pageProps} account={account} />
+    <Component {...pageProps} isEns={isEns} setIsEns={setIsEns} />
     <Web3Modal config={config} />
   </>
 }
