@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import Preloader from '../components/preloader';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const config = {
@@ -40,7 +42,19 @@ function MyApp({ Component, pageProps }) {
     sessionStorage.setItem("isEns", "false");
     setIsEns(false);
     disconnect();
-    router.push("/")
+    toast.success('Log out success!', {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    if (router.pathname != "/") {
+      router.push("/")
+    }
   }
 
 
@@ -91,7 +105,7 @@ function MyApp({ Component, pageProps }) {
                 </Popover.Content>
               </Popover>
               :
-              <Web3Button></Web3Button>
+              <Web3Button style={{ marginRight: "120px" }}></Web3Button>
             }
           </Navbar.Item>
         </Navbar.Content>
@@ -99,6 +113,18 @@ function MyApp({ Component, pageProps }) {
     </Layout>
     <Component {...pageProps} isEns={isEns} setIsEns={setIsEns} isLoading={isLoading} setIsLoading={setIsLoading} />
     <Web3Modal config={config} />
+    <ToastContainer
+      position="bottom-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
   </>
 }
 

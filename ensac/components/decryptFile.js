@@ -1,9 +1,8 @@
-import { Button } from "antd";
 import { useEffect, useState } from "react";
 import org3Abi from '../data/org3Abi.json'
 import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
-import { Modal, Input, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
+import { Modal, Button, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
 import Encrypt from "../utils/encrypt";
 function DecryptFile(props) {
     const [loading, setLoading] = useState(false);
@@ -25,10 +24,11 @@ function DecryptFile(props) {
     }
 
     useEffect(()=>{
+        if(props.visible){
         console.log("decrypt modal")
         console.log(props)
         decryptHashFromContract()
-        
+        }
     }, [props.visible])
 
     return (
@@ -47,10 +47,10 @@ function DecryptFile(props) {
             {
                 loading?
                 
-                "Decrypting...":
+                <h1>Decrypting...</h1>:
                 decryptedHash?
-                <Button onClick={()=>{window.open("ipfs.io/ipfs/"+decryptedHash)}}>View File</Button>:
-                "No Access"
+                <Button onClick={()=>{window.open("https://flamingle.mypinata.cloud/ipfs/"+decryptedHash)}}>View File</Button>:
+                <h1>No Access</h1>
             }
 
         </Modal.Body>
