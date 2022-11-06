@@ -22,21 +22,9 @@ const ENSChangeSubdomainPusher = (props) => {
   let { receipt, isWaiting } = useWaitForTransaction({ hash: data ? data.hash : null })
   let [visible, setVisible] = useState(false);
 
-  const addFileConfig2 = {
-    address: '0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41',
-    abi: ensResolverAbi,
-    functionName: 'setAddr',
-    chainId: chains.mainnet.id,
-    args: [props.domainName, 60, props.resolvedAddress]
-
-  }
-
-  let { data2, error2, isLoading2, write2 } = useContractWrite(addFileConfig2);
-  let { receipt2, isWaiting2 } = useWaitForTransaction({ hash: data2 ? data2.hash : null })
-
-
   useEffect(() => {
     if (props.call) {
+      console.log("calling1")
       console.log(props)
       write();
       // toast.success('Node added!', {
@@ -50,65 +38,7 @@ const ENSChangeSubdomainPusher = (props) => {
       //   theme: "light",
       // });
       console.log(error)
-      if (error) {
-        alert(error.message)
-      }else{
-        write2();
-      }
-    }
-  }, [props.call])
-
-  return (
-    <Modal
-      aria-labelledby="modal-title"
-      open={isLoading || isWaiting || isLoading2 || isWaiting2}
-      onClose={() => setVisible(false)}
-    >
-      <Modal.Header>
-          <Text id="modal-title" size={18}>
-            Adding data to ENS Registry
-            </Text>
-        </Modal.Header>
-        <Modal.Body>
-          
-        </Modal.Body>
-        
-      </Modal>
-    )
-}
-
-const ENSChangeResolvedAddress = (props) => {
-  const addFileConfig = {
-    address: '0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41',
-    abi: ensResolverAbi,
-    functionName: 'setAddr',
-    chainId: chains.mainnet.id,
-    args: [props.domainName, 60, props.resolvedAddress]
-
-  }
-
-  let { data, error, isLoading, write } = useContractWrite(addFileConfig);
-  let { receipt, isWaiting } = useWaitForTransaction({ hash: data ? data.hash : null })
-  let [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (props.call) {
-      console.log(props)
-      write();
-      // toast.success('Node added!', {
-      //   position: "bottom-right",
-      //   autoClose: 5000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: "light",
-      // });
-      console.log(error)
-      if (error) {
-        alert(error.message)
-      }
+      props.setCall1Status("finished")
     }
   }, [props.call])
 
@@ -124,11 +54,11 @@ const ENSChangeResolvedAddress = (props) => {
             </Text>
         </Modal.Header>
         <Modal.Body>
-        <Loading></Loading>
+          <Loading></Loading>
         </Modal.Body>
         
       </Modal>
     )
 }
 
-export  {ENSChangeSubdomainPusher, ENSChangeResolvedAddress}
+export default ENSChangeSubdomainPusher;

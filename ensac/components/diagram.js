@@ -10,7 +10,8 @@ import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { namehash } from '@ensdomains/ensjs/utils/normalise'
 import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction, Web3Modal } from '@web3modal/react'
-import {ENSChangeSubdomainPusher, ENSChangeResolvedAddress} from './ensChangeSubdomainPusher'
+import ENSChangeSubdomainPusher from './ensChangeSubdomainPusher'
+import ENSChangeResolvedAddress from "./ENSChangeResolvedAddress";
 import { Web3Button, useAccount } from '@web3modal/react';
 import {toast} from "react-toastify";
 import { ContractMethodNoResultError } from "@wagmi/core";
@@ -31,6 +32,7 @@ function Diagram() {
     const [walletAddress, setWalletAddress] = React.useState("");
     const [call, setCall] = React.useState(0)
     const [call2, setCall2] = React.useState(0)
+    const [call1Status, setCall1Status] = React.useState("");
     const { account } = useAccount();
 
     let new_data = new Set()
@@ -113,6 +115,9 @@ function Diagram() {
     }
 
     const addHandler = () => {
+        setCall1Status("");
+        setNodeName("");
+        setWalletAddress("")
         setAdd(true);
     }
 
@@ -130,8 +135,13 @@ function Diagram() {
 
     const addToENSHandler = async () => {
         console.log("cakked");
-        await translate(walletAddress);
-        setCall(call + 1);
+        if(call1Status != "finished"){
+            await translate(walletAddress);
+            setCall(call + 1);
+        }
+        else{
+            setCall2(call2+1);
+        }
     }
 
 
@@ -229,7 +239,7 @@ function Diagram() {
                 </Modal.Body>
                 <Modal.Footer >
                     <Button auto onPress={addToENSHandler} css={{ width: "100%" }}>
-                        Add
+                        {call1Status=="finished"? "Set Resolved Address": "Add Subdomain"}
                     </Button>
                 </Modal.Footer>
             </> : <>
@@ -264,7 +274,7 @@ function Diagram() {
             </>}
 
         </Modal>
-        <ENSChangeSubdomainPusher call2={call2} setCall2={setCall2} call={call} domainName={namehash(ens)}  subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={account.address} resolver={"0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41"}  domainName={namehash(nodeName + "." + ens)}  resolvedAddress={walletAddress} ttl={0}></ENSChangeSubdomainPusher>
+        <ENSChangeSubdomainPusher setCall1Status={setCall1Status} call={call} domainName={namehash(ens)}  subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={account.address} resolver={"0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41"} resolvedAddress={walletAddress} ttl={0}></ENSChangeSubdomainPusher>
         <ENSChangeResolvedAddress call={call2} domainName={namehash(nodeName + "." + ens)}  resolvedAddress={walletAddress} ></ENSChangeResolvedAddress>
     </DiagramComponent></>);
 }
