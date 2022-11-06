@@ -92,10 +92,10 @@ export default function Files() {
   };
 
   const addFileConfig = {
-    addressOrName: '0x3d04d379a907053566ecae7c896641fb5fc77d02',
-    contractInterface: org3Abi,
+    addressOrName: '0xcc9A39284f5b0045B00731b474A9cA96f10dC707',
+    abi: org3Abi,
     functionName: 'addFile',
-    chainId: chains.goerli.id
+    chainId: chains.mainnet.id
   }
 
   const { data, error, isLoading, write } = useContractWrite(addFileConfig)
@@ -106,6 +106,8 @@ export default function Files() {
     setVisible(true);
   }
   const uploadFile = async () => {
+    
+    console.log(write)
     setLoading("Uploading to IPFS");
     const IpfsHash = await pinFileToIPFS(file);
     setHash(IpfsHash);
@@ -115,7 +117,8 @@ export default function Files() {
     const encryptedDescriptionString = await blobToBase64(encryptedString);
 
     const filename = file.name;
-    write(filename, encryptedDescriptionString, encryptedSymmetricKey, ensdomains.join("/"))
+    console.log(write)
+    await write(filename, encryptedDescriptionString, encryptedSymmetricKey, ensdomains.join("/"))
 
     setLoading(false);
     console.log("Encrypt Done")
