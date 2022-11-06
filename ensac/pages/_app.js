@@ -25,7 +25,8 @@ registerLicense('ORg4AjUWIQA/Gnt2VVhjQlFaclhJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXx
 function MyApp({ Component, pageProps }) {
   const [variant, setVariant] = React.useState("static");
   const variants = ["static", "floating", "sticky"];
-  const { account } = useAccount()
+  const { account } = useAccount();
+  account.isEns = false;
 
   return <>
     <Head>
@@ -62,7 +63,7 @@ function MyApp({ Component, pageProps }) {
         </Navbar.Content>
       </Navbar>
     </Layout>
-    <Component {...pageProps} />
+    <Component {...pageProps} account={account} />
     <Web3Modal config={config} />
   </>
 }

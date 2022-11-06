@@ -5,10 +5,15 @@ import React from "react";
 import { findSubdomains } from "../utils/graph"
 import { useAccount } from '@web3modal/react';
 import LandingPage from '../components/landing';
-import InputEns from  '../components/inputEns';
+import InputEns from '../components/inputEns';
+import { useEffect } from 'react';
 
-export default function Home() {
-  const { account } = useAccount();
+export default function Home(props) {
+  const { account } = props;
+
+  useEffect(() => {
+    console.log(account);
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -26,13 +31,13 @@ export default function Home() {
 
       {account.isConnected && !account.isEns &&
         <>
-          <h1>Tree</h1>
-          <inputEns></inputEns>
+          <h1>Input ENS</h1>
+          <InputEns />
         </>
       }
 
       {!account.isConnected && !account.isEns &&
-       <LandingPage></LandingPage>
+        <LandingPage></LandingPage>
       }
 
 
