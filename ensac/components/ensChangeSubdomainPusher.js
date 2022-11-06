@@ -40,7 +40,7 @@ const ENSChangeSubdomainPusher = (props) => {
       >
       <Modal.Header>
           <Text id="modal-title" size={18}>
-            Syncing Data to Smart Contract
+            Adding data to ENS Registry
             </Text>
         </Modal.Header>
         <Modal.Body>

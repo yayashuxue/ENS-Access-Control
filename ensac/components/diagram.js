@@ -9,8 +9,9 @@ import { findSubdomains, findAddress} from "../utils/graph";
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { namehash } from '@ensdomains/ensjs/utils/normalise'
 import { chains } from '@web3modal/ethereum'
-import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
+import { useContractWrite, useWaitForTransaction, Web3Modal } from '@web3modal/react'
 import ENSChangeSubdomainPusher from './ensChangeSubdomainPusher'
+import { Web3Button, useAccount } from '@web3modal/react';
 
 
 let new_data = new Set()
@@ -20,7 +21,7 @@ const getSubdomainData = async (domainName) => {
     console.log(data.data);
     new_data = []
 
-    new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].owner.id })
+    new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].resolvedAddress ? data.data.domains[0].resolvedAddress.id : "Unassigned"})
 
     buildUpArray(data.data.domains[0])
     console.log(new_data)
@@ -34,7 +35,7 @@ const buildUpArray = (parent_domains) => {
         return;
     }
     for(let i = 0; i < parent_domains.subdomains.length; ++i){
-        new_data.push({ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].owner.id, parent: parent_domains.name})
+        new_data.push({ens: parent_domains.subdomains[i].name, wallet: parent_domains.subdomains[i].resolvedAddress ? parent_domains.subdomains[i].resolvedAddress.id : "Unassigned", parent: parent_domains.name})
         buildUpArray(parent_domains.subdomains[i])
     }
 }
@@ -60,6 +61,7 @@ function Diagram() {
     const [nodeName, setNodeName] = React.useState("");
     const [walletAddress, setWalletAddress] = React.useState("");
     const [call, setCall] = React.useState(0)
+    const { account } = useAccount();
 
 
     useEffect(() => {
@@ -247,7 +249,7 @@ function Diagram() {
             </>}
 
         </Modal>
-        <ENSChangeSubdomainPusher call={call} domainName={namehash(ens)} subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={walletAddress} resolver={"0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41"} ttl={0}></ENSChangeSubdomainPusher>
+        <ENSChangeSubdomainPusher call={call} domainName={namehash(ens)} subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={account.address} resolver={walletAddress} ttl={0}></ENSChangeSubdomainPusher>
     </DiagramComponent>;
 }
 

@@ -14,22 +14,22 @@ export const findSubdomains = async (ensName) => {
     `
     {
         domains (where: {name:"${ensName}"}){
-            owner{
+            resolvedAddress{
                 id
             }
             name
             subdomains{
-                owner{
+                resolvedAddress{
                     id
                 }
                 name
                 subdomains{
-                    owner{
+                    resolvedAddress{
                         id
                     }
                     name
                     subdomains{
-                        owner{
+                        resolvedAddress{
                             id
                         }
                         name
@@ -51,7 +51,7 @@ export const findAddress = async (ensName) => {
     `
     {
         domains (where: {name:"${ensName}"}){
-            owner{
+            resolvedAddress{
                 id
             }
             name
