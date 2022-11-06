@@ -81,7 +81,7 @@ function MyApp({ Component, pageProps }) {
         <Navbar.Content>
           <Navbar.Item>
             {account.isConnected ?
-              <Button style={{marginRight:"120px"}} size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
+              <Button onPress={disconnectWallet} style={{ marginRight: "120px" }} size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
               :
               <Web3Button></Web3Button>
             }
