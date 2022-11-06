@@ -1,15 +1,35 @@
 import { Input } from '@nextui-org/react';
 import { Button } from '@nextui-org/react';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { findSubdomains } from '../utils/graph';
 
 function InputEns(props) {
   const { setIsEns } = props;
   const [ens, setEns] = useState("");
+  const [intheOrganization, setIntheOrganization] = useState(true);
 
-  function handleGo() {
-    sessionStorage.setItem('isEns', ens);
-    setIsEns(true);
+  const handleGo = async (event) => {
+    event.preventDefault();
+    await getSubdomainData(ens);
+    if (intheOrganization) {
+      sessionStorage.setItem('isEns', ens);
+      setIsEns(true);
+    } else {
+      toast.error("You are not in this organization!")
+    }
   }
+
+  const getSubdomainData = async (domainName) => {
+
+    let data = await findSubdomains(domainName)
+    console.log(data.data);
+
+    //setIntheOrganization(true/false)
+
+    return;
+  }
+
 
   function handleEnsChange(event) {
     setEns(event.target.value);
