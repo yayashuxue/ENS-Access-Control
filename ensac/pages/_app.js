@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import React, { useEffect } from "react";
 import { registerLicense } from '@syncfusion/ej2-base';
-import { Navbar, Button, Link, Text, Card, Radio } from "@nextui-org/react";
+import { Navbar, Button, Link, Text, Card, Popover } from "@nextui-org/react";
 import { Layout } from "./Layout.js";
 import { Logo } from "./Logo.js";
 import { Web3Button, useAccount } from '@web3modal/react';
@@ -11,6 +11,7 @@ import { Web3Modal } from '@web3modal/react'
 import { useDisconnect } from '@web3modal/react'
 import { useRouter } from 'next/router';
 import Preloader from '../components/preloader';
+
 
 const config = {
   projectId: '2178494a077a0d1c10f5b88476a39330',
@@ -34,12 +35,9 @@ function MyApp({ Component, pageProps }) {
   const disconnect = useDisconnect();
 
   const disconnectWallet = () => {
-    if (confirm("Do you want to sign out?")) {
-      sessionStorage.setItem("isEns", "false");
-      setIsEns(false);
-      disconnect();
-    }
-
+    sessionStorage.setItem("isEns", "false");
+    setIsEns(false);
+    disconnect();
   }
 
 
@@ -81,7 +79,15 @@ function MyApp({ Component, pageProps }) {
         <Navbar.Content>
           <Navbar.Item>
             {account.isConnected ?
-              <Button onPress={disconnectWallet} style={{ marginRight: "120px" }} size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
+              <Popover>
+                <Popover.Trigger>
+                  <Button style={{ marginRight: "120px" }} size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
+                </Popover.Trigger>
+                <Popover.Content>
+                  <Button onPress={disconnectWallet} auto color="error" size="md">Sign Out</Button>
+                </Popover.Content>
+              </Popover>
+
               :
               <Web3Button></Web3Button>
             }

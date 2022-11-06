@@ -26,7 +26,7 @@ export default function Home(props) {
       {account.isConnected && isEns &&
         <>
           <h1>Organizational Structrue Tree</h1>
-          <Diagram></Diagram>
+          <Diagram />
         </>
       }
 
@@ -37,8 +37,6 @@ export default function Home(props) {
       {!account.isConnected &&
         <LandingPage />
       }
-
-
 
     </div>
   )
