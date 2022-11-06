@@ -10,6 +10,9 @@ export default function InputEns() {
           height: "90vh"
         }}>
       <Input label="ENS address" placeholder="tech.flamingo.eth" />
+      <Button onClick={() => alert("change to landing page")}>
+            Upload File Securely
+      </Button>
       </div>
   )
 }
