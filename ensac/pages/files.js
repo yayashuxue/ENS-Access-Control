@@ -33,7 +33,7 @@ export default function Files(props) {
     { name: "ACTIONS", uid: "actions" },
   ];
   const file_svg = "https://upload.wikimedia.org/wikipedia/commons/0/0c/File_alt_font_awesome.svg"
-  
+
   const blobToBase64 = blob => {
     const reader = new FileReader();
     reader.readAsDataURL(blob);
@@ -71,7 +71,7 @@ export default function Files(props) {
     if(!isLoading && data){
       const fileCount = data.length / 4;
       const allFiles = [];
-      for(let i = 0; i < fileCount; i+=1){
+      for (let i = 0; i < fileCount; i += 1) {
         const f = {
           filename: data[i],
           encryptedDescriptionString: data[fileCount+i],
@@ -104,7 +104,7 @@ export default function Files(props) {
     setEncryptedDescriptionString(encryptedDescriptionString)
     setEncryptedSymmetricKey(encryptedSymmetricKey)
     setVisible(false);
-    setCall(call+1);
+    setCall(call + 1);
     setLoading(false);
   }
 

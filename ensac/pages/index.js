@@ -12,6 +12,10 @@ export default function Home(props) {
   const { account } = useAccount();
   const { isEns, setIsEns } = props;
 
+  // useEffect(() => {
+  //   console.log(sessionStorage.getItem("isEns"));
+  // });
+
   return (
     <div className={styles.container}>
       <Head>
