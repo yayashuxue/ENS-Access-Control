@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps }) {
 
   return <>
     <Head>
-      <title>Org3</title>
+      <title>ORG3</title>
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="assets/css/fontAwesome5Pro.css" />
       <link rel="stylesheet" href="assets/css/flaticon.css" />
@@ -65,7 +65,7 @@ function MyApp({ Component, pageProps }) {
     </Head>
     {isLoading && <Preloader />}
     <Layout>
-      <Navbar isBordered variant={variant}>
+      <Navbar disableShadow isBordered variant={variant}>
         <Navbar.Brand>
           <Logo />
         </Navbar.Brand>
@@ -81,7 +81,7 @@ function MyApp({ Component, pageProps }) {
         <Navbar.Content>
           <Navbar.Item>
             {account.isConnected ?
-              <Button onPress={disconnectWallet} size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
+              <Button style={{marginRight:"120px"}} size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
               :
               <Web3Button></Web3Button>
             }
