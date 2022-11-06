@@ -40,6 +40,7 @@ function MyApp({ Component, pageProps }) {
     sessionStorage.setItem("isEns", "false");
     setIsEns(false);
     disconnect();
+    router.push("/")
   }
 
 
