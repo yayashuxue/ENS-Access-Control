@@ -70,7 +70,7 @@ function MyApp({ Component, pageProps }) {
           <Logo />
         </Navbar.Brand>
         {account.isConnected && isEns ?
-          <Navbar.Content hideIn="xs">
+          <Navbar.Content hideIn="xs" css={{ marginLeft: "30px" }}>
             <Navbar.Link href="/" isActive={router.pathname == "/"}><AccountTreeIcon sx={{ mr: 1 }} /> Organization</Navbar.Link>
             <Navbar.Link href="/files" isActive={router.pathname == "/files"} ><InsertDriveFileIcon sx={{ mr: 1 }} /> Files</Navbar.Link>
           </Navbar.Content>
