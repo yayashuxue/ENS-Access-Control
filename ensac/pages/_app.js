@@ -4,12 +4,11 @@ import { registerLicense } from '@syncfusion/ej2-base';
 import { Navbar, Button, Link, Text, Card, Radio } from "@nextui-org/react";
 import { Layout } from "./Layout.js";
 import { Logo } from "./Logo.js";
-import Image from 'next/image';
 import { Web3Button, useAccount } from '@web3modal/react';
 import Head from 'next/head';
 import './index.css';
 import { Web3Modal } from '@web3modal/react'
-import { useDisconnect } from '@web3modal/ethereum';
+import { useDisconnect } from '@web3modal/react'
 import { useRouter } from 'next/router';
 
 const config = {
@@ -30,7 +29,16 @@ function MyApp({ Component, pageProps }) {
   const { account } = useAccount();
   const [isEns, setIsEns] = React.useState(false);
   const router = useRouter();
-  console.log(router);
+  const disconnect = useDisconnect();
+
+  const disconnectWallet = () => {
+    if (confirm("Do you want to sign out?")) {
+      sessionStorage.setItem("isEns", "false");
+      setIsEns(false);
+      disconnect();
+    }
+
+  }
 
 
   useEffect(() => {
@@ -70,7 +78,7 @@ function MyApp({ Component, pageProps }) {
         <Navbar.Content>
           <Navbar.Item>
             {account.isConnected ?
-              <Button size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
+              <Button onPress={disconnectWallet} size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
               :
               <Web3Button></Web3Button>
             }
