@@ -6,6 +6,12 @@ import { DataManager, Query } from '@syncfusion/ej2-data';
 import LanguageIcon from '@mui/icons-material/Language';
 import WalletIcon from '@mui/icons-material/Wallet';
 import {findSubdomains} from "../utils/graph";
+import {  keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+import { namehash } from '@ensdomains/ensjs/utils/normalise'
+import { chains } from '@web3modal/ethereum'
+import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
+import ENSChangeSubdomainPusher from './ensChangeSubdomainPusher'
+
 
 let new_data = new Set()
 const getSubdomainData = async (domainName) => {
@@ -46,9 +52,14 @@ function Diagram() {
     const [visible, setVisible] = React.useState(false);
     const [parent, setParent] = React.useState("Default parent");
     const [wallet, setWallet] = React.useState("Default wallet");
-    const [ens, setEns] = React.useState("Default ENS");
+    const [ens, setEns] = React.useState("");
     const [add, setAdd] = React.useState(false);
     const [items, setItems] = React.useState(null);
+    // const [parentName, setParentName] = React.useState("")
+    const [nodeName,setNodeName] = React.useState("");
+    const [walletAddress,setWalletAddress] = React.useState("");
+    const [call, setCall] = React.useState(0)
+
 
     useEffect(()=>{
         // Event.preventDefault();
@@ -67,6 +78,14 @@ function Diagram() {
         setVisible(true);
     }
 
+    function handleNodeNameChange(event) {
+        setNodeName(event.target.value);
+    }
+
+    function handleWalletAddress(event){
+        setWalletAddress(event.target.value)
+    }
+
     const addHandler = () => {
         setAdd(true);
     }
@@ -74,6 +93,14 @@ function Diagram() {
     const closeHandler = () => {
         setVisible(false);
     };
+
+    const addToENSHandler = () => {
+        console.log("cakked");
+        setCall(call+1);
+        // args: [namehash('julieshi.eth'), keccak256(toUtf8Bytes(nodeName)), walletAddress, "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41", "0000000000000000000000000000000000000000000000000000000000000000"]
+    
+        // setVisible(false);
+    }
 
 
     function node(props) {
@@ -156,14 +183,18 @@ function Diagram() {
                         labelRight={`.${ens}`}
                         color="primary"
                         css={{ marginBottom: "30px" }}
+                        onChange = {handleNodeNameChange}
+                        value={nodeName}
                     />
                     <Input
                         bordered
                         labelPlaceholder="Wallet Address"
+                        value={walletAddress}
+                        onChange = {handleWalletAddress}
                         color="primary" />
                 </Modal.Body>
                 <Modal.Footer >
-                    <Button auto onPress={closeHandler} css={{ width: "100%" }}>
+                    <Button auto onPress={addToENSHandler} css={{ width: "100%" }}>
                         Add
                     </Button>
                 </Modal.Footer>
@@ -197,7 +228,8 @@ function Diagram() {
             </>}
 
         </Modal>
+        <ENSChangeSubdomainPusher call={call} domainName={namehash(ens)} subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={walletAddress} resolver={"0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41"} ttl={0}></ENSChangeSubdomainPusher>
     </DiagramComponent>;
-}
+    }
 
 export default Diagram;
