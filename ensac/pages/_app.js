@@ -11,6 +11,8 @@ import { Web3Modal } from '@web3modal/react'
 import { useDisconnect } from '@web3modal/react'
 import { useRouter } from 'next/router';
 import Preloader from '../components/preloader';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 
 const config = {
@@ -69,8 +71,8 @@ function MyApp({ Component, pageProps }) {
         </Navbar.Brand>
         {account.isConnected && isEns ?
           <Navbar.Content hideIn="xs">
-            <Navbar.Link href="/" isActive={router.pathname == "/"}>Organization</Navbar.Link>
-            <Navbar.Link href="/files" isActive={router.pathname == "/files"} >Files</Navbar.Link>
+            <Navbar.Link href="/" isActive={router.pathname == "/"}><AccountTreeIcon sx={{ mr: 1 }} /> Organization</Navbar.Link>
+            <Navbar.Link href="/files" isActive={router.pathname == "/files"} ><InsertDriveFileIcon sx={{ mr: 1 }} /> Files</Navbar.Link>
           </Navbar.Content>
           :
           ""
@@ -81,13 +83,12 @@ function MyApp({ Component, pageProps }) {
             {account.isConnected ?
               <Popover>
                 <Popover.Trigger>
-                  <Button style={{ marginRight: "120px" }} size={"sm"}>{account.address.slice(0, 10) + "..."}</Button>
+                  <Button style={{ marginRight: "120px" }} size={"md"}>{account.address.slice(0, 10) + "..."}</Button>
                 </Popover.Trigger>
                 <Popover.Content>
                   <Button onPress={disconnectWallet} auto color="error" size="md">Sign Out</Button>
                 </Popover.Content>
               </Popover>
-
               :
               <Web3Button></Web3Button>
             }
