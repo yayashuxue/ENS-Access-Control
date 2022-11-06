@@ -7,7 +7,7 @@ function LandingPage() {
                 h1
                 size={60}
                 css={{
-                    textGradient: "45deg, $blue600 -20%, $pink600 50%",
+                    textGradient: "45deg, $blue800 -20%, $blue600 50%",
                 }}
                 weight="bold"
             >
@@ -16,6 +16,7 @@ function LandingPage() {
             <Text
                 h2
                 weight="bold"
+                color="$gray800"
             >
                 Please connect wallet to begin.
             </Text>
