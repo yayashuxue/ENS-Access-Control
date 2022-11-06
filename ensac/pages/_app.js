@@ -42,7 +42,16 @@ function MyApp({ Component, pageProps }) {
     sessionStorage.setItem("isEns", "false");
     setIsEns(false);
     disconnect();
-    toast("Log out success!");
+    toast.success('Log out success!', {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
     if (router.pathname != "/") {
       router.push("/")
     }
@@ -104,7 +113,18 @@ function MyApp({ Component, pageProps }) {
     </Layout>
     <Component {...pageProps} isEns={isEns} setIsEns={setIsEns} isLoading={isLoading} setIsLoading={setIsLoading} />
     <Web3Modal config={config} />
-    <ToastContainer />
+    <ToastContainer
+      position="bottom-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
   </>
 }
 
