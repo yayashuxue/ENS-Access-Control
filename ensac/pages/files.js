@@ -6,7 +6,6 @@ import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
-import { Input, Grid } from "@nextui-org/react";
 import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
 import pinFileToIPFS from '../utils/pinFileToIPFS';
@@ -20,7 +19,7 @@ export default function Files() {
   const [loading, setLoading] = useState("");
   const [hash, setHash] = useState("")
 
-  const inputFile = useRef(null) 
+  const inputFile = useRef(null)
 
   const columns = [
     { name: "FILE NAME", uid: "name" },
@@ -100,7 +99,7 @@ export default function Files() {
   }
 
   const { data, error, isLoading, write } = useContractWrite(addFileConfig)
-  const { receipt, isWaiting } = useWaitForTransaction({ hash: data?data.hash:null })
+  const { receipt, isWaiting } = useWaitForTransaction({ hash: data ? data.hash : null })
 
   const selectFile = async (e) => {
     setFile(e.target.files[0]);
@@ -126,11 +125,11 @@ export default function Files() {
     const encryptedStringBlob = await (await fetch(encryptedString)).blob();
 
     try {
-        const decryptedHash = await Encrypt.decryptHash(encryptedStringBlob, encryptedSymmetricKey, ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]);
-        console.log(decryptedHash)
-        setDecryptedHash(decryptedHash)
+      const decryptedHash = await Encrypt.decryptHash(encryptedStringBlob, encryptedSymmetricKey, ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]);
+      console.log(decryptedHash)
+      setDecryptedHash(decryptedHash)
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
 
     // Set decrypted string
@@ -234,18 +233,18 @@ export default function Files() {
           <Button onClick={() => inputFile.current.click()}>
             Upload File Securely
           </Button>
-          <input type="file" name="file" ref={inputFile} onChange={selectFile} style={{display:"none"}} />
+          <input type="file" name="file" ref={inputFile} onChange={selectFile} style={{ display: "none" }} />
         </Row>
       </div>
       <Modal
         closeButton
         aria-labelledby="modal-title"
-        open={visible&&file&&file.name}
-        onClose={()=>setVisible(false)}
+        open={visible && file && file.name}
+        onClose={() => setVisible(false)}
       >
-      <Modal.Header>
+        <Modal.Header>
           <Text id="modal-title" size={18}>
-            Uploading <span style={{fontWeight:"600"}}>{file?file.name:""}</span>
+            Uploading <span style={{ fontWeight: "600" }}>{file ? file.name : ""}</span>
           </Text>
         </Modal.Header>
         <Modal.Body>
@@ -259,28 +258,28 @@ export default function Files() {
             fullWidth
             color="primary"
             size="lg"
-            value={file?file.name:""}
+            value={file ? file.name : ""}
           />
           <Text size={16}>
             Who can access?
           </Text>
           <Input
-          readOnly={loading}
-          placeholder={"tech.flamingle.eth"}
+            readOnly={loading}
+            placeholder={"tech.flamingle.eth"}
             clearable
             bordered
             fullWidth
             color="primary"
             size="lg"
           />
-          
+
         </Modal.Body>
         <Modal.Footer>
-          <Button auto flat color="error" onClick={()=>setVisible(false)} disabled={loading}>
+          <Button auto flat color="error" onClick={() => setVisible(false)} disabled={loading}>
             Cancel
           </Button>
           <Button auto onClick={uploadFile} disabled={loading}>
-            {!loading?"Confirm":loading+"..."}
+            {!loading ? "Confirm" : loading + "..."}
           </Button>
         </Modal.Footer>
       </Modal>
