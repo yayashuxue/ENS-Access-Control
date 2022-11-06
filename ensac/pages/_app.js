@@ -10,6 +10,7 @@ import './index.css';
 import { Web3Modal } from '@web3modal/react'
 import { useDisconnect } from '@web3modal/react'
 import { useRouter } from 'next/router';
+import Preloader from '../components/preloader';
 
 const config = {
   projectId: '2178494a077a0d1c10f5b88476a39330',
@@ -24,10 +25,11 @@ const config = {
 registerLicense('ORg4AjUWIQA/Gnt2VVhjQlFaclhJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRd0RjXH5Yc3BWQ2hfWEE=');
 
 function MyApp({ Component, pageProps }) {
-  const [variant, setVariant] = React.useState("static");
+  const [variant, setVariant] = React.useState("sticky");
   const variants = ["static", "floating", "sticky"];
   const { account } = useAccount();
   const [isEns, setIsEns] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
   const router = useRouter();
   const disconnect = useDisconnect();
 
@@ -42,13 +44,13 @@ function MyApp({ Component, pageProps }) {
 
 
   useEffect(() => {
-    console.log("session " + sessionStorage.getItem("isEns"));
-
+    setIsLoading(true);
     if (sessionStorage.getItem("isEns") != null && sessionStorage.getItem("isEns") != "" && sessionStorage.getItem("isEns") != 'false') {
       setIsEns(true);
     } else {
       setIsEns(false);
     }
+    setTimeout(() => { setIsLoading(false) }, 1000);
   }, [])
 
   return <>
@@ -61,6 +63,7 @@ function MyApp({ Component, pageProps }) {
       {/* Global Site Tag (gtag.js) - Google Analytics */}
 
     </Head>
+    {isLoading && <Preloader />}
     <Layout>
       <Navbar isBordered variant={variant}>
         <Navbar.Brand>
@@ -86,7 +89,7 @@ function MyApp({ Component, pageProps }) {
         </Navbar.Content>
       </Navbar>
     </Layout>
-    <Component {...pageProps} isEns={isEns} setIsEns={setIsEns} />
+    <Component {...pageProps} isEns={isEns} setIsEns={setIsEns} isLoading={isLoading} setIsLoading={setIsLoading} />
     <Web3Modal config={config} />
   </>
 }
