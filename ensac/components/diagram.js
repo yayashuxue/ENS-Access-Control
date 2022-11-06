@@ -116,9 +116,6 @@ function Diagram() {
         console.log("cakked");
         await translate(walletAddress);
         setCall(call + 1);
-        // args: [namehash('julieshi.eth'), keccak256(toUtf8Bytes(nodeName)), walletAddress, "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41", "0000000000000000000000000000000000000000000000000000000000000000"]
-
-        // setVisible(false);
     }
 
 

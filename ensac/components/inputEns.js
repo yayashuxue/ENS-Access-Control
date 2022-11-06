@@ -3,14 +3,18 @@ import { Button } from '@nextui-org/react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { findSubdomains } from '../utils/graph';
+import { useAccount } from '@web3modal/react';
 
 function InputEns(props) {
   const { setIsEns } = props;
   const [ens, setEns] = useState("");
+  const { account } = useAccount();
 
   const handleGo = async (event) => {
     event.preventDefault();
-    let intheOrganization = await getSubdomainData(ens);
+    let data = await findSubdomains(ens);
+    let intheOrganization = checkIfUnderDomain(data.data.domains[0]);
+    console.log(account.address);
     if (intheOrganization) {
       sessionStorage.setItem('isEns', ens);
       setIsEns(true);
@@ -19,16 +23,23 @@ function InputEns(props) {
     }
   }
 
-  const getSubdomainData = async (domainName) => {
-
-    let data = await findSubdomains(domainName)
-    console.log(data.data);
-
-
-    //return (true/false)
+  const checkIfUnderDomain = (parentdomain) => {
+    if(!parentdomain){
+      return false;
+    }
+    if(parentdomain.resolvedAddress && parentdomain.resolvedAddress.id.toLowerCase() == account.address.toLowerCase()){
+      return true;
+    }
+    if(!parentdomain.subdomains){
+      return false;
+    }
+    for(let i = 0; i < parentdomain.subdomains.length; ++i){
+      if(checkIfUnderDomain(parentdomain.subdomains[i])){
+        return true;
+      }
+    }
     return false;
   }
-
 
   function handleEnsChange(event) {
     setEns(event.target.value);
