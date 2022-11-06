@@ -16,7 +16,8 @@ function InputEns(props) {
   }
 
   return (
-    <div
+    <form
+      onSubmit={handleGo}
       style={{
         display: "flex",
         justifyContent: "center",
@@ -24,11 +25,13 @@ function InputEns(props) {
         height: "70vh",
         flexGrow: 0
       }}>
+
       <Input labelPlaceholder="Organization's ENS address" css={{ width: "300px" }} value={ens} onChange={handleEnsChange} />
-      <Button onClick={handleGo} css={{ marginLeft: "10px" }}>
+      <Button type="submit" css={{ marginLeft: "10px" }}>
         Go
       </Button>
-    </div>
+
+    </form>
   )
 }
 
