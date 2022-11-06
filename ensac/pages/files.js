@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
-import { Modal, Input, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
+import React, { useEffect, useState } from 'react';
+import { Modal, Input, Table, Row, Col, Tooltip, file, Text } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
 import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
-import { chains } from '@web3modal/ethereum'
-import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
 import pinFileToIPFS from '../utils/pinFileToIPFS';
 import Encrypt from '../utils/encrypt';
-import org3Abi from '../data/org3Abi.json'
 import { useRef } from 'react';
+import { useContractRead } from '@web3modal/react'
+import ContractPusher from '../components/contractPusher';
+import org3Abi from '../data/org3Abi.json'
+import { chains } from '@web3modal/ethereum'
 
 export default function Files() {
   const [file, setFile] = useState();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState("");
   const [hash, setHash] = useState("")
-
-  const inputFile = useRef(null) 
+  const [filename, setFilename] = useState("");
+  const [encryptedDescriptionString, setEncryptedDescriptionString] = useState("")
+  const [encryptedSymmetricKey, setEncryptedSymmetricKey] = useState("")
+  const [ensdomains, setEnsdomains] = useState("")
+  const [call, setCall] = useState(0)
+  const [fileList, setFileList] = useState([])
+  const inputFile = useRef(null)
 
   const columns = [
     { name: "FILE NAME", uid: "name" },
@@ -28,59 +34,7 @@ export default function Files() {
     { name: "ACTIONS", uid: "actions" },
   ];
   const file_svg = "https://upload.wikimedia.org/wikipedia/commons/0/0c/File_alt_font_awesome.svg"
-  const users = [
-    {
-      id: 1,
-      name: "A Certified Digital Signature",
-      role: "Ralph C. Merkle",
-      team: "1979",
-      status: "ViewOnly",
-      age: "29",
-      avatar: file_svg,
-      email: "tony.reichert@example.com",
-    },
-    {
-      id: 2,
-      name: "Smart Contracts",
-      role: "Nick Szabo",
-      team: "1994",
-      status: "ViewOnly",
-      age: "25",
-      avatar: file_svg,
-      email: "zoey.lang@example.com",
-    },
-    {
-      id: 3,
-      name: "Bitcoin: a Peer-to-Peer Electronic Cash System",
-      role: "Satoshi Nakamoto",
-      team: "2008",
-      status: "ViewOnly",
-      age: "22",
-      avatar: file_svg,
-      email: "jane.fisher@example.com",
-    },
-    {
-      id: 4,
-      name: "Ethereum: A Next Generation Smart Contract & Decentralized Application Platform",
-      role: "Vitalik Buterin",
-      team: "2013",
-      status: "ViewOnly",
-      age: "28",
-      avatar: file_svg,
-      email: "william.howard@example.com",
-    },
-    {
-      id: 4,
-      name: "Flamingo Design Doc",
-      role: "Flamingo team",
-      team: "2022",
-      status: "Edit",
-      age: "28",
-      avatar: file_svg,
-      email: "william.howard@example.com",
-    },
-  ];
-
+  
   const blobToBase64 = blob => {
     const reader = new FileReader();
     reader.readAsDataURL(blob);
@@ -91,37 +45,61 @@ export default function Files() {
     });
   };
 
-  const addFileConfig = {
-    addressOrName: '0xcc9A39284f5b0045B00731b474A9cA96f10dC707',
+  const config = {
+    address: '0xcc9A39284f5b0045B00731b474A9cA96f10dC707',
     abi: org3Abi,
-    functionName: 'addFile',
-    chainId: chains.mainnet.id
+    functionName: 'getAllData',
+    chainId: chains.mainnet.id,
+    args: ["flamingle.eth"]
   }
+  const { data, error, isLoading, refetch } = useContractRead(config)
 
-  const { data, error, isLoading, write } = useContractWrite(addFileConfig)
-  const { receipt, isWaiting } = useWaitForTransaction({ hash: data?data.hash:null })
+  useState(()=>{
+    const getData = async ()=>{
+      await refetch();
+    }
+
+    getData()
+  }, [refetch])
+
+  useEffect(()=>{
+    if(!isLoading){
+      const fileCount = data.length / 4;
+      const allFiles = [];
+      for(let i = 0; i < fileCount; i+=1){
+        const f = {
+          filename: data[i],
+          encryptedDescriptionString: data[fileCount+i],
+          encryptedSymmetricKey: data[fileCount*2+i],
+          ensdomains: data[fileCount*3+1]
+        }
+        allFiles.push(f)
+      }
+      setFileList(allFiles);
+    }
+  }, [!isLoading])
 
   const selectFile = async (e) => {
     setFile(e.target.files[0]);
     setVisible(true);
   }
   const uploadFile = async () => {
-    
-    console.log(write)
     setLoading("Uploading to IPFS");
     const IpfsHash = await pinFileToIPFS(file);
     setHash(IpfsHash);
     setLoading("Encrypting");
-    const ensdomains = ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]; // TODO
+    const ensdomains = "0x14589BDFdbe3044501044df5B6d53be2f47e92e5"; // TODO
     const { encryptedString, encryptedSymmetricKey } = await Encrypt.encryptHash(IpfsHash, ensdomains)
     const encryptedDescriptionString = await blobToBase64(encryptedString);
 
     const filename = file.name;
-    console.log(write)
-    await write(filename, encryptedDescriptionString, encryptedSymmetricKey, ensdomains.join("/"))
-
+    setEnsdomains(ensdomains)
+    setFilename(filename)
+    setEncryptedDescriptionString(encryptedDescriptionString)
+    setEncryptedSymmetricKey(encryptedSymmetricKey)
+    setVisible(false);
+    setCall(call+1);
     setLoading(false);
-    console.log("Encrypt Done")
   }
 
   const decryptHashFromContract = async (encryptedString, encryptedSymmetricKey) => {
@@ -139,58 +117,25 @@ export default function Files() {
     // setDescription(decryptedDescription);
   }
 
-  const renderCell = (user, columnKey) => {
-    const cellValue = user[columnKey];
+  const renderCell = (file, columnKey) => {
+    const cellValue = file[columnKey];
     switch (columnKey) {
       case "name":
         return (
-          <User squared src={user.avatar} name={cellValue} css={{ p: 0 }}>
+          <file squared src={file.avatar} name={file.filename} css={{ p: 0 }}>
 
-          </User>
-        );
-      case "role":
-        return (
-          <Col>
-            <Row>
-              <Text b size={14} css={{ tt: "capitalize" }}>
-                {cellValue}
-              </Text>
-            </Row>
-            <Row>
-              <Text b size={13} css={{ tt: "capitalize", color: "$accents7" }}>
-                {user.team}
-              </Text>
-            </Row>
-          </Col>
+          </file>
         );
       case "status":
-        return <StyledBadge type={user.status}>{cellValue}</StyledBadge>;
+        return <StyledBadge type={file.status}>{cellValue}</StyledBadge>;
 
       case "actions":
         return (
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
               <Tooltip content="Details">
-                <IconButton onClick={() => console.log("View user", user.id)}>
+                <IconButton onClick={() => console.log("View file", file.id)}>
                   <EyeIcon size={20} fill="#979797" />
-                </IconButton>
-              </Tooltip>
-            </Col>
-            <Col css={{ d: "flex" }}>
-              <Tooltip content="Edit user">
-                <IconButton onClick={() => console.log("Edit user", user.id)}>
-                  <EditIcon size={20} fill="#979797" />
-                </IconButton>
-              </Tooltip>
-            </Col>
-            <Col css={{ d: "flex" }}>
-              <Tooltip
-                content="Delete user"
-                color="error"
-                onClick={() => console.log("Delete user", user.id)}
-              >
-                <IconButton>
-                  <DeleteIcon size={20} fill="#FF0080" />
                 </IconButton>
               </Tooltip>
             </Col>
@@ -222,7 +167,7 @@ export default function Files() {
               </Table.Column>
             )}
           </Table.Header>
-          <Table.Body items={users}>
+          <Table.Body items={fileList}>
             {(item) => (
               <Table.Row>
                 {(columnKey) => (
@@ -286,6 +231,7 @@ export default function Files() {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ContractPusher call={call} primaryDomain={"flamingle.eth"} filename={filename} encryptedDescriptionString={encryptedDescriptionString} encryptedSymmetricKey={encryptedSymmetricKey} ensdomains={ensdomains}></ContractPusher>
     </div>
 
 
