@@ -63,6 +63,7 @@ class Encrypt {
         if (!this.litNodeClient) {
           await this.connect();
         }
+        console.log(encryptedString, encryptedSymmetricKey, ensdomains)
     
         const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain });
         const symmetricKey = await this.litNodeClient.getEncryptionKey({

@@ -14,16 +14,22 @@ import ContractPusher from '../components/contractPusher';
 import org3Abi from '../data/org3Abi.json'
 import { chains } from '@web3modal/ethereum';
 import { Container } from '@nextui-org/react';
+import DecryptFile from '../components/decryptFile';
 
 export default function Files(props) {
   const [file, setFile] = useState();
   const [visible, setVisible] = useState(false);
+  const [decryptVisible, setDecryptVisible] = useState(false);
   const [loading, setLoading] = useState("");
   const [hash, setHash] = useState("")
   const [filename, setFilename] = useState("");
   const [encryptedDescriptionString, setEncryptedDescriptionString] = useState("")
   const [encryptedSymmetricKey, setEncryptedSymmetricKey] = useState("")
   const [ensdomains, setEnsdomains] = useState("")
+  const [dfilename, setDFilename] = useState("");
+  const [dencryptedDescriptionString, setDEncryptedDescriptionString] = useState("")
+  const [dencryptedSymmetricKey, setDEncryptedSymmetricKey] = useState("")
+  const [densdomains, setDEnsdomains] = useState("")
   const [call, setCall] = useState(0)
   const [fileList, setFileList] = useState([])
   const inputFile = useRef(null)
@@ -54,22 +60,24 @@ export default function Files(props) {
   }
   const { data, error, isLoading, refetch } = useContractRead(config)
 
-  useState(() => {
-    const getData = async () => {
-      console.log("fetch")
-      setInterval(async () => {
-        await refetch();
-        console.log(fileList)
-      }, 10000
+  useState(()=>{
+    const getData = async ()=>{
+      //console.log("fetch")
+      setInterval(async()=>{
+        //console.log(decryptVisible)
+        if(!decryptVisible){
+          await refetch();
+        }
+      }, 20000
       )
     }
 
     getData()
   }, [refetch])
 
-  useEffect(() => {
-    console.log(data)
-    if (!isLoading && data) {
+  useEffect(()=>{
+    //console.log(data)
+    if(!isLoading && data){
       const fileCount = data.length / 4;
       const allFiles = [];
       for (let i = 0; i < fileCount; i += 1) {
@@ -80,7 +88,7 @@ export default function Files(props) {
           ensdomains: data[fileCount * 3 + i]
         }
         allFiles.push(f)
-        console.log(f)
+        //console.log(f)
       }
       setFileList(allFiles);
     }
@@ -89,18 +97,19 @@ export default function Files(props) {
   const selectFile = async (e) => {
     setFile(e.target.files[0]);
     setVisible(true);
+    setFilename(e.target.files[0].name)
   }
   const uploadFile = async () => {
     setLoading("Uploading to IPFS");
     const IpfsHash = await pinFileToIPFS(file);
     setHash(IpfsHash);
     setLoading("Encrypting");
-    const ensdomains = "0x14589BDFdbe3044501044df5B6d53be2f47e92e5"; // TODO
+    const ensdomains = ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]; // TODO
     const { encryptedString, encryptedSymmetricKey } = await Encrypt.encryptHash(IpfsHash, ensdomains)
     const encryptedDescriptionString = await blobToBase64(encryptedString);
 
     const filename = file.name;
-    setEnsdomains(ensdomains)
+    setEnsdomains(ensdomains.join("/"))
     setFilename(filename)
     setEncryptedDescriptionString(encryptedDescriptionString)
     setEncryptedSymmetricKey(encryptedSymmetricKey)
@@ -109,26 +118,21 @@ export default function Files(props) {
     setLoading(false);
   }
 
-  const decryptHashFromContract = async (encryptedString, encryptedSymmetricKey) => {
-    const encryptedStringBlob = await (await fetch(encryptedString)).blob();
-
-    try {
-      const decryptedHash = await Encrypt.decryptHash(encryptedStringBlob, encryptedSymmetricKey, ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]);
-      console.log(decryptedHash)
-      setDecryptedHash(decryptedHash)
-    } catch (error) {
-      console.log(error);
-    }
-
-    // Set decrypted string
-    // setDescription(decryptedDescription);
+  const handleClickFile = (file) =>{
+    //console.log("click", file.filename)
+    setDecryptVisible(true)
+    setDFilename(file.filename)
+    setDEncryptedDescriptionString(file.encryptedDescriptionString);
+    setDEncryptedSymmetricKey(file.encryptedSymmetricKey);
+    setDEnsdomains([file.ensdomains])
   }
 
   const renderCell = (file, columnKey) => {
+    
     const cellValue = file[columnKey];
     switch (columnKey) {
       case "name":
-        return <a style={{ cursor: "pointer" }}>{file.filename}</a>;
+        return <a style={{cursor:"pointer"}} onClick={()=>{handleClickFile(file)}}>{file.filename}</a>;
       //case "status":
       //  return <StyledBadge type={file.status}>{cellValue}</StyledBadge>;
       case "access":
@@ -139,7 +143,7 @@ export default function Files(props) {
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
               <Tooltip content="View File">
-                <IconButton onClick={() => console.log("View file", file.id)}>
+                <IconButton onClick={() => handleClickFile(file)}>
                   <EyeIcon size={20} fill="#979797" />
                 </IconButton>
               </Tooltip>
@@ -150,7 +154,7 @@ export default function Files(props) {
         return cellValue;
     }
   };
-  console.log(fileList)
+  console.log(fileList) 
   return (
 
     <div>
@@ -213,10 +217,10 @@ export default function Files(props) {
             readOnly={loading}
             clearable
             bordered
-            fullWidth
+            onChange={(e)=>{setFilename(e.target.value)}}
             color="primary"
             size="lg"
-            value={file ? file.name : ""}
+            value={filename&&file? filename : ""}
           />
           <Text size={16}>
             Who can access?
@@ -228,6 +232,7 @@ export default function Files(props) {
             bordered
             fullWidth
             color="primary"
+            onChange={(e)=>{setEnsdomains(e.target.value)}}
             size="lg"
           />
 
@@ -242,6 +247,7 @@ export default function Files(props) {
         </Modal.Footer>
       </Modal>
       <ContractPusher call={call} primaryDomain={"flamingle.eth"} filename={filename} encryptedDescriptionString={encryptedDescriptionString} encryptedSymmetricKey={encryptedSymmetricKey} ensdomains={ensdomains}></ContractPusher>
+      <DecryptFile visible={decryptVisible} setVisible={setDecryptVisible} filename={dfilename} encryptedString={dencryptedDescriptionString} encryptedSymmetricKey={dencryptedSymmetricKey} ensdomains={densdomains}></DecryptFile>
     </div>
 
 
