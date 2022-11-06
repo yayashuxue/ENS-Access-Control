@@ -5,8 +5,8 @@ import { DiagramComponent, Inject, DataBinding, HierarchicalTree, SnapConstraint
 import { DataManager, Query } from '@syncfusion/ej2-data';
 import LanguageIcon from '@mui/icons-material/Language';
 import WalletIcon from '@mui/icons-material/Wallet';
-import {findSubdomains} from "../utils/graph";
-import {  keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+import { findSubdomains } from "../utils/graph";
+import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { namehash } from '@ensdomains/ensjs/utils/normalise'
 import { chains } from '@web3modal/ethereum'
 import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
@@ -20,7 +20,7 @@ const getSubdomainData = async (domainName) => {
     console.log(data.data);
     new_data = []
 
-    new_data.push({ens: data.data.domains[0].name, wallet: data.data.domains[0].id})
+    new_data.push({ ens: data.data.domains[0].name, wallet: data.data.domains[0].id })
 
     buildUpArray(data.data.domains[0])
     console.log(new_data)
@@ -30,7 +30,7 @@ const getSubdomainData = async (domainName) => {
 }
 
 const buildUpArray = (parent_domains) => {
-    if(!parent_domains.subdomains){
+    if (!parent_domains.subdomains) {
         return;
     }
     for(let i = 0; i < parent_domains.subdomains.length; ++i){
@@ -57,22 +57,22 @@ function Diagram() {
     const [add, setAdd] = React.useState(false);
     const [items, setItems] = React.useState(null);
     // const [parentName, setParentName] = React.useState("")
-    const [nodeName,setNodeName] = React.useState("");
-    const [walletAddress,setWalletAddress] = React.useState("");
+    const [nodeName, setNodeName] = React.useState("");
+    const [walletAddress, setWalletAddress] = React.useState("");
     const [call, setCall] = React.useState(0)
 
 
-    useEffect(()=>{
+    useEffect(() => {
         // Event.preventDefault();
         const call = async () => {
             let ens = sessionStorage.getItem("isEns");
-            if (ens != "" && ens !="false") {
+            if (ens != "" && ens != "false") {
                 await getSubdomainData(ens);
                 setItems(new DataManager(new_data, new Query().take(7)));
             } else {
                 alert("ENS is not in session storage!!!!");
             }
-            
+
         }
         call();
     }, [])
@@ -89,7 +89,7 @@ function Diagram() {
         setNodeName(event.target.value);
     }
 
-    function handleWalletAddress(event){
+    function handleWalletAddress(event) {
         setWalletAddress(event.target.value)
     }
 
@@ -103,9 +103,9 @@ function Diagram() {
 
     const addToENSHandler = () => {
         console.log("cakked");
-        setCall(call+1);
+        setCall(call + 1);
         // args: [namehash('julieshi.eth'), keccak256(toUtf8Bytes(nodeName)), walletAddress, "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41", "0000000000000000000000000000000000000000000000000000000000000000"]
-    
+
         // setVisible(false);
     }
 
@@ -113,7 +113,7 @@ function Diagram() {
     function node(props) {
         console.log(props);
         return <div>
-            <Button bordered auto shadow onPress={() => { handler(props.data) }} css={{ width: "150px", height: "50px" }}>
+            <Button bordered auto shadow onPress={() => { handler(props.data) }} css={{ width: "150px", height: "50px", backgroundColor: "#ffffff" }}>
                 {getPrefix(props.data.ens)}
             </Button>
         </div>
@@ -190,14 +190,14 @@ function Diagram() {
                         labelRight={`.${ens}`}
                         color="primary"
                         css={{ marginBottom: "30px" }}
-                        onChange = {handleNodeNameChange}
+                        onChange={handleNodeNameChange}
                         value={nodeName}
                     />
                     <Input
                         bordered
                         labelPlaceholder="Wallet Address"
                         value={walletAddress}
-                        onChange = {handleWalletAddress}
+                        onChange={handleWalletAddress}
                         color="primary" />
                 </Modal.Body>
                 <Modal.Footer >
@@ -218,12 +218,14 @@ function Diagram() {
                             {ens}
                         </Text>
                     </div>
-
                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                         <WalletIcon />
-                        <Text css={{ textAlign: "left", margin: "0 0 0 10px", }}>
-                            {wallet}
-                        </Text>
+                        <div style={{ width: "95%", overflow: "scroll" }}>
+                            <Text css={{ textAlign: "left", margin: "0 0 0 10px" }}>
+                                {wallet}
+                            </Text>
+                        </div>
+
                     </div>
 
                 </Modal.Body>
@@ -237,6 +239,6 @@ function Diagram() {
         </Modal>
         <ENSChangeSubdomainPusher call={call} domainName={namehash(ens)} subName={keccak256(toUtf8Bytes(nodeName))} ownerAddress={walletAddress} resolver={"0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41"} ttl={0}></ENSChangeSubdomainPusher>
     </DiagramComponent>;
-    }
+}
 
 export default Diagram;
