@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
-import { Navbar, Link, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
+import { Modal, Input, Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
 import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
-import { Content } from './Content';
-import { Logo } from "./Logo.js";
+import { chains } from '@web3modal/ethereum'
+import { useContractWrite, useWaitForTransaction } from '@web3modal/react'
+import pinFileToIPFS from '../utils/pinFileToIPFS';
+import Encrypt from '../utils/encrypt';
+import org3Abi from '../data/org3Abi.json'
+import { useRef } from 'react';
 
 export default function Files() {
-  const [variant, setVariant] = React.useState("static");
+  const [file, setFile] = useState();
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState("");
+  const [hash, setHash] = useState("")
 
-  const variants = ["static", "floating", "sticky"];
+  const inputFile = useRef(null) 
+
   const columns = [
     { name: "FILE NAME", uid: "name" },
     { name: "OWNER", uid: "role" },
@@ -73,10 +81,60 @@ export default function Files() {
     },
   ];
 
-  //   const addFile() => {
-  //     alert("add file clicked")
-  //   }
+  const blobToBase64 = blob => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    return new Promise(resolve => {
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+    });
+  };
 
+  const addFileConfig = {
+    addressOrName: '0x3d04d379a907053566ecae7c896641fb5fc77d02',
+    contractInterface: org3Abi,
+    functionName: 'addFile',
+    chainId: chains.goerli.id
+  }
+
+  const { data, error, isLoading, write } = useContractWrite(addFileConfig)
+  const { receipt, isWaiting } = useWaitForTransaction({ hash: data?data.hash:null })
+
+  const selectFile = async (e) => {
+    setFile(e.target.files[0]);
+    setVisible(true);
+  }
+  const uploadFile = async () => {
+    setLoading("Uploading to IPFS");
+    const IpfsHash = await pinFileToIPFS(file);
+    setHash(IpfsHash);
+    setLoading("Encrypting");
+    const ensdomains = ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]; // TODO
+    const { encryptedString, encryptedSymmetricKey } = await Encrypt.encryptHash(IpfsHash, ensdomains)
+    const encryptedDescriptionString = await blobToBase64(encryptedString);
+
+    const filename = file.name;
+    write(filename, encryptedDescriptionString, encryptedSymmetricKey, ensdomains.join("/"))
+
+    setLoading(false);
+    console.log("Encrypt Done")
+  }
+
+  const decryptHashFromContract = async (encryptedString, encryptedSymmetricKey) => {
+    const encryptedStringBlob = await (await fetch(encryptedString)).blob();
+
+    try {
+        const decryptedHash = await Encrypt.decryptHash(encryptedStringBlob, encryptedSymmetricKey, ["0x14589BDFdbe3044501044df5B6d53be2f47e92e5"]);
+        console.log(decryptedHash)
+        setDecryptedHash(decryptedHash)
+    } catch (error) {
+        console.log(error);
+    }
+
+    // Set decrypted string
+    // setDescription(decryptedDescription);
+  }
 
   const renderCell = (user, columnKey) => {
     const cellValue = user[columnKey];
@@ -172,9 +230,59 @@ export default function Files() {
           </Table.Body>
         </Table>
         <Row style={{ marginTop: "20px" }} justify="end" align="center">
-          <Button onClick={() => alert("add file clicked")}>Add File</Button>
+          <Button onClick={() => inputFile.current.click()}>
+            Upload File Securely
+          </Button>
+          <input type="file" name="file" ref={inputFile} onChange={selectFile} style={{display:"none"}} />
         </Row>
       </div>
+      <Modal
+        closeButton
+        aria-labelledby="modal-title"
+        open={visible&&file&&file.name}
+        onClose={()=>setVisible(false)}
+      >
+      <Modal.Header>
+          <Text id="modal-title" size={18}>
+            Uploading <span style={{fontWeight:"600"}}>{file?file.name:""}</span>
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Text size={16}>
+            File Name
+          </Text>
+          <Input
+            readOnly={loading}
+            clearable
+            bordered
+            fullWidth
+            color="primary"
+            size="lg"
+            value={file?file.name:""}
+          />
+          <Text size={16}>
+            Who can access?
+          </Text>
+          <Input
+          readOnly={loading}
+          placeholder={"tech.flamingle.eth"}
+            clearable
+            bordered
+            fullWidth
+            color="primary"
+            size="lg"
+          />
+          
+        </Modal.Body>
+        <Modal.Footer>
+          <Button auto flat color="error" onClick={()=>setVisible(false)} disabled={loading}>
+            Cancel
+          </Button>
+          <Button auto onClick={uploadFile} disabled={loading}>
+            {!loading?"Confirm":loading+"..."}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
 
 
