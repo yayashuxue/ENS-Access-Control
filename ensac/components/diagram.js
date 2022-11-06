@@ -3,6 +3,8 @@ import React from "react";
 import { Modal, Button, Text, Input, Row, Checkbox } from "@nextui-org/react";
 import { DiagramComponent, Inject, DataBinding, HierarchicalTree, SnapConstraints, DiagramConstraints } from "@syncfusion/ej2-react-diagrams";
 import { DataManager, Query } from '@syncfusion/ej2-data';
+import LanguageIcon from '@mui/icons-material/Language';
+import WalletIcon from '@mui/icons-material/Wallet';
 
 
 //Initializes data source
@@ -150,6 +152,7 @@ function Diagram() {
             aria-labelledby="modal-title"
             open={visible}
             onClose={closeHandler}
+            width="500px"
         >
             {add ? <>
                 <Modal.Header>
@@ -182,12 +185,19 @@ function Diagram() {
                     </Text>
                 </Modal.Header>
                 <Modal.Body>
-                    <Text css={{ textAlign: "left", marginBottom: "0" }}>
-                        ENS domain: {ens}
-                    </Text>
-                    <Text css={{ textAlign: "left" }}>
-                        Wallet address: {wallet}
-                    </Text>
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <LanguageIcon />
+                        <Text css={{ textAlign: "left", margin: "0 0 0 10px", }}>
+                            {ens}
+                        </Text>
+                    </div>
+
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <WalletIcon />
+                        <Text css={{ textAlign: "left", margin: "0 0 0 10px", }}>
+                            {wallet}
+                        </Text>
+                    </div>
 
                 </Modal.Body>
                 <Modal.Footer>
