@@ -64,8 +64,14 @@ function Diagram() {
     useEffect(()=>{
         // Event.preventDefault();
         const call = async () => {
-            await getSubdomainData("julieshi.eth");
-            setItems(new DataManager(new_data, new Query().take(7)));
+            let ens = sessionStorage.getItem("isEns");
+            if (ens != "" && ens !="false") {
+                await getSubdomainData(ens);
+                setItems(new DataManager(new_data, new Query().take(7)));
+            } else {
+                alert("ENS is not in session storage!!!!");
+            }
+            
         }
         call();
     }, [])
