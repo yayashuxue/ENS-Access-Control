@@ -7,6 +7,7 @@ import { useAccount } from '@web3modal/react';
 import LandingPage from '../components/landing';
 import InputEns from '../components/inputEns';
 import { useEffect } from 'react';
+import { Container } from '@nextui-org/react';
 
 export default function Home(props) {
   const { account } = useAccount();
@@ -25,7 +26,7 @@ export default function Home(props) {
       </Head>
       {account.isConnected && isEns &&
         <>
-          <h1>Organizational Structrue Tree</h1>
+          <Container sm><h1>Organizational Structrue Tree</h1></Container>
           <Diagram />
         </>
       }
