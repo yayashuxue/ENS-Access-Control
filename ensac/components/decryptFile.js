@@ -25,11 +25,12 @@ function DecryptFile(props) {
 
     useEffect(()=>{
         if(props.visible){
+          window.alert = function() {};
         console.log("decrypt modal")
         console.log(props)
         decryptHashFromContract()
         }
-    }, [props.visible])
+    }, [props])
 
     return (
         <Modal
