@@ -10,6 +10,7 @@ import Head from 'next/head';
 import './index.css';
 import { Web3Modal } from '@web3modal/react'
 import { useDisconnect } from '@web3modal/ethereum';
+import { useRouter } from 'next/router';
 
 const config = {
   projectId: '2178494a077a0d1c10f5b88476a39330',
@@ -28,6 +29,8 @@ function MyApp({ Component, pageProps }) {
   const variants = ["static", "floating", "sticky"];
   const { account } = useAccount();
   const [isEns, setIsEns] = React.useState(false);
+  const router = useRouter();
+  console.log(router);
 
 
   useEffect(() => {
@@ -57,8 +60,8 @@ function MyApp({ Component, pageProps }) {
         </Navbar.Brand>
         {account.isConnected && isEns ?
           <Navbar.Content hideIn="xs">
-            <Navbar.Link href="/files">Files</Navbar.Link>
-            <Navbar.Link href="/">Company</Navbar.Link>
+            <Navbar.Link href="/" isActive={router.pathname == "/"}>Organization</Navbar.Link>
+            <Navbar.Link href="/files" isActive={router.pathname == "/files"} >Files</Navbar.Link>
           </Navbar.Content>
           :
           ""

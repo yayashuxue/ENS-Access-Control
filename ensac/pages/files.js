@@ -13,7 +13,6 @@ import { useContractRead } from '@web3modal/react'
 import ContractPusher from '../components/contractPusher';
 import org3Abi from '../data/org3Abi.json'
 import { chains } from '@web3modal/ethereum'
-import { useEffect } from 'react';
 
 export default function Files(props) {
   const [file, setFile] = useState();
