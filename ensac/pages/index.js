@@ -30,7 +30,7 @@ export default function Home(props) {
         <InputEns setIsEns={setIsEns} />
       }
 
-      {!account.isConnected && !isEns &&
+      {!account.isConnected &&
         <LandingPage />
       }
 

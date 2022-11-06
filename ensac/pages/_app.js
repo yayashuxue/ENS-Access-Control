@@ -9,6 +9,7 @@ import { Web3Button, useAccount } from '@web3modal/react';
 import Head from 'next/head';
 import './index.css';
 import { Web3Modal } from '@web3modal/react'
+import { useDisconnect } from '@web3modal/ethereum';
 
 const config = {
   projectId: '2178494a077a0d1c10f5b88476a39330',
@@ -27,6 +28,7 @@ function MyApp({ Component, pageProps }) {
   const variants = ["static", "floating", "sticky"];
   const { account } = useAccount();
   const [isEns, setIsEns] = React.useState(false);
+
 
   useEffect(() => {
     if (sessionStorage.getItem("isEns") == null || sessionStorage.getItem("isEns") == 'false') {
@@ -53,7 +55,7 @@ function MyApp({ Component, pageProps }) {
         <Navbar.Brand>
           <Logo />
         </Navbar.Brand>
-        {account.isConnected ?
+        {account.isConnected && isEns ?
           <Navbar.Content hideIn="xs">
             <Navbar.Link href="/files">Files</Navbar.Link>
             <Navbar.Link href="/">Company</Navbar.Link>
