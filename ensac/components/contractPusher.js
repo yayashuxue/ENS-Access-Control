@@ -28,6 +28,7 @@ const ContractPusher = (props) => {
         }
     }, [props.call])
 
+    console.log(props)
 
     return (
         <Modal
