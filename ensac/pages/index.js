@@ -18,7 +18,7 @@ export default function Home() {
       </Head>
       {account.isConnected ?
         <>
-          <h1>Tree</h1>
+          <h1>Organizational Structrue Tree</h1>
           <Diagram></Diagram>
         </> : <LandingPage />
       }

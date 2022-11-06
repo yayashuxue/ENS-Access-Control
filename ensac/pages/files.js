@@ -106,7 +106,7 @@ export default function Files() {
     setVisible(true);
   }
   const uploadFile = async () => {
-    
+
     console.log(write)
     setLoading("Uploading to IPFS");
     const IpfsHash = await pinFileToIPFS(file);
@@ -204,6 +204,7 @@ export default function Files() {
 
     <div>
       <div style={{ marginLeft: "80px", marginRight: "80px" }}>
+        <h1>Files</h1>
         <Table
           aria-label="Example table with custom cells"
           css={{
